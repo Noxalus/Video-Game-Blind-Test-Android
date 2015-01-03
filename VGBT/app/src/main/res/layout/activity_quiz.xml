@@ -6,8 +6,8 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="vgbt.noxalus.com.videogameblindtest.QuizActivity">
 
-    <EditText
-        android:id="@+id/EditTextSongURL"
+    <TextView
+        android:id="@+id/musicName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -23,13 +23,13 @@
 
         <requestFocus />
 
-    </EditText>
+    </TextView>
 
     <ImageButton
         android:id="@+id/ButtonTestPlayPause"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/EditTextSongURL"
+        android:layout_below="@+id/musicName"
         android:layout_centerHorizontal="true"
         android:contentDescription="TestPlayPause"
         android:onClick="onClick"
@@ -41,5 +41,13 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/ButtonTestPlayPause" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Next"
+        android:id="@+id/nextButton"
+        android:layout_below="@+id/SeekBarTestPlay"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

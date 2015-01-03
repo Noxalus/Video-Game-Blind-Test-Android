@@ -1,7 +1,10 @@
 package vgbt.noxalus.com.videogameblindtest;
 
+import android.content.Intent;
+import android.media.AudioManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.media.MediaPlayer;
@@ -12,20 +15,26 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
-import android.widget.EditText;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
+import android.widget.TextView;
+
+import java.util.Random;
 
 public class QuizActivity extends ActionBarActivity implements OnClickListener, OnTouchListener, OnCompletionListener, OnBufferingUpdateListener {
 
     private ImageButton buttonPlayPause;
     private SeekBar seekBarProgress;
-    public EditText editTextSongURL;
+    public TextView musicNameTextView;
 
     private MediaPlayer mediaPlayer;
     private int mediaFileLengthInMilliseconds;
 
     private final Handler handler = new Handler();
+
+    Random r;
+    private int currentMusicId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,15 +47,74 @@ public class QuizActivity extends ActionBarActivity implements OnClickListener, 
         buttonPlayPause = (ImageButton)findViewById(R.id.ButtonTestPlayPause);
         buttonPlayPause.setOnClickListener(this);
 
+        musicNameTextView = (TextView)findViewById(R.id.musicName);
+
         seekBarProgress = (SeekBar)findViewById(R.id.SeekBarTestPlay);
         seekBarProgress.setMax(99); // It means 100% .0-99
         seekBarProgress.setOnTouchListener(this);
-        editTextSongURL = (EditText)findViewById(R.id.EditTextSongURL);
-        editTextSongURL.setText(R.string.testsong);
 
         mediaPlayer = new MediaPlayer();
+        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         mediaPlayer.setOnBufferingUpdateListener(this);
         mediaPlayer.setOnCompletionListener(this);
+
+        mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                if (!mediaPlayer.isPlaying()) {
+
+                    mediaFileLengthInMilliseconds = mediaPlayer.getDuration();
+
+                    mediaPlayer.start();
+
+                    musicNameTextView.setText("extrait" + currentMusicId + ".mp3 (" + mediaFileLengthInMilliseconds + ")");
+
+                    buttonPlayPause.setImageResource(R.drawable.button_pause);
+                    primarySeekBarProgressUpdater();
+                }
+            }
+        });
+
+        r = new Random();
+
+        Button nextButton = (Button)findViewById(R.id.nextButton);
+        nextButton.setOnClickListener((new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                nextMusic();
+            }
+        }));
+
+        nextMusic();
+    }
+
+    private void generateNewRandomId()
+    {
+        currentMusicId = r.nextInt(252) + 1;
+    }
+
+    private void nextMusic()
+    {
+        generateNewRandomId();
+
+        if (mediaPlayer.isPlaying()) {
+            mediaPlayer.stop();
+        }
+
+        mediaPlayer.reset();
+
+        loadMusic();
+    }
+
+    private void loadMusic()
+    {
+        try {
+            String currentMusicUrl = getResources().getString(R.string.baseUrl) + "extrait" + currentMusicId + ".mp3";
+            mediaPlayer.setDataSource(currentMusicUrl);
+            mediaPlayer.prepareAsync();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void primarySeekBarProgressUpdater() {
@@ -65,15 +133,7 @@ public class QuizActivity extends ActionBarActivity implements OnClickListener, 
     @Override
     public void onClick(View v) {
         if(v.getId() == R.id.ButtonTestPlayPause){
-
-            try {
-                mediaPlayer.setDataSource(editTextSongURL.getText().toString());
-                mediaPlayer.prepare();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            mediaFileLengthInMilliseconds = mediaPlayer.getDuration();
+            loadMusic();
 
             if(!mediaPlayer.isPlaying()){
                 mediaPlayer.start();
