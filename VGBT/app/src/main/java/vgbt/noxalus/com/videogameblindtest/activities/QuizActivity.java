@@ -198,7 +198,7 @@ public class QuizActivity extends ActionBarActivity implements OnClickListener, 
         }
 
         for (int i = 0; i < 4; i++) {
-            answerButtonMap.get(i).setBackgroundColor(Color.CYAN);
+            answerButtonMap.get(i).setBackgroundResource(R.drawable.button);
             answerButtonMap.get(i).setText(questions.get(currentQuestionId).getAnswers().get(i));
         }
 
@@ -342,8 +342,7 @@ public class QuizActivity extends ActionBarActivity implements OnClickListener, 
         {
             if (!answerGiven) {
                 if (questions.get(currentQuestionId).getAnswerIndex() == id) {
-                    button.setBackgroundColor(Color.GREEN);
-
+                    button.setBackgroundResource(R.drawable.button_correct);
                     correctSound.start();
                     score++;
                     scoreTextView.setText(Integer.toString(score));
@@ -351,8 +350,8 @@ public class QuizActivity extends ActionBarActivity implements OnClickListener, 
                     wrongSound.start();
 
                     int answerId = questions.get(currentQuestionId).getAnswerIndex();
-                    answerButtonMap.get(answerId).setBackgroundColor(Color.GREEN);
-                    button.setBackgroundColor(Color.RED);
+                    answerButtonMap.get(answerId).setBackgroundResource(R.drawable.button_correct);
+                    button.setBackgroundResource(R.drawable.button_wrong);
                     life--;
 
                     if (life <= 0)

@@ -51,7 +51,8 @@
         android:layout_above="@+id/answerButton2"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="10dp" />
+        android:layout_marginTop="10dp"
+        style="@style/ButtonStyle" />
 
     <Button
         android:layout_width="fill_parent"
@@ -62,7 +63,8 @@
         android:layout_above="@+id/answerButton3"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="10dp" />
+        android:layout_marginTop="10dp"
+        style="@style/ButtonStyle" />
 
     <Button
         android:layout_width="fill_parent"
@@ -73,7 +75,8 @@
         android:layout_above="@+id/answerButton4"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="10dp" />
+        android:layout_marginTop="10dp"
+        style="@style/ButtonStyle" />
 
     <Button
         android:layout_width="fill_parent"
@@ -84,7 +87,8 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="10dp" />
+        android:layout_marginTop="10dp"
+        style="@style/ButtonStyle" />
 
     <ImageButton
         android:layout_width="175dp"
@@ -95,7 +99,8 @@
         android:scaleType="fitCenter"
         android:layout_centerHorizontal="true"
         android:layout_alignParentStart="false"
-        android:layout_marginTop="60dp" />
+        android:layout_marginTop="60dp"
+        style="@style/ButtonStyle" />
 
     <TextView
         android:layout_width="wrap_content"

@@ -28,10 +28,11 @@
         android:textSize="100dp" />
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Retry"
         android:id="@+id/backButton"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        style="@style/ButtonStyle" />
 </RelativeLayout>
