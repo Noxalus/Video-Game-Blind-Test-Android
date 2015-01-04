@@ -136,7 +136,6 @@ public class QuizActivity extends ActionBarActivity implements OnClickListener, 
         }
 
         mode = getIntent().getStringExtra("mode");
-        mode = "nom";
 
         answerButtonMap = new HashMap<Integer, Button>();
 
