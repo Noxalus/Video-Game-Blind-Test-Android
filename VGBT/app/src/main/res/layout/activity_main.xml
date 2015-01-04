@@ -7,13 +7,12 @@
 
     <Button
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
         android:text="Play"
         android:id="@+id/playButton"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/titleTextView"
         style="@style/ButtonStyle"/>
 
     <TextView
@@ -26,6 +25,18 @@
         android:layout_centerHorizontal="true"
         android:textSize="50dp"
         android:gravity="center" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView"
+        android:src="@drawable/logo"
+        android:scaleType="fitCenter"
+        android:layout_below="@+id/titleTextView"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_above="@+id/playButton"
+        android:padding="20dp" />
 
     <!--
     <Button

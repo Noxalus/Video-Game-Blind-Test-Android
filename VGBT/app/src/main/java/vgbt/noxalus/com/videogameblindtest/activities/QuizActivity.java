@@ -278,7 +278,7 @@ public class QuizActivity extends ActionBarActivity implements OnClickListener, 
 
     @Override
     public void onBufferingUpdate(MediaPlayer mp, int percent) {
-        seekBarProgress.setSecondaryProgress(percent);
+        //seekBarProgress.setSecondaryProgress(percent);
     }
 
     @Override

@@ -14,7 +14,7 @@
         android:id="@+id/modeInfoTextView"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:textSize="50dp"
+        android:textSize="30dp"
         android:gravity="center" />
 
     <Button
