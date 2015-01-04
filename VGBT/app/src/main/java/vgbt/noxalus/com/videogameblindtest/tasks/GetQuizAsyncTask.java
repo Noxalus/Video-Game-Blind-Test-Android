@@ -3,21 +3,35 @@ package vgbt.noxalus.com.videogameblindtest.tasks;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Entity;
 import org.w3c.dom.NodeList;
+import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
 import java.util.ArrayList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import vgbt.noxalus.com.videogameblindtest.entities.Question;
 
@@ -27,17 +41,12 @@ public class GetQuizAsyncTask extends AsyncTask<String, String, ArrayList<Questi
 
     @Override
     protected void onPostExecute(ArrayList<Question> result) {
-        // TODO Auto-generated method stub
         super.onPostExecute(result);
-        // update textview here
-        //textView.setText("Server message is "+result);
-
         delegate.processFinish(result);
     }
 
     @Override
     protected void onPreExecute() {
-        // TODO Auto-generated method stub
         super.onPreExecute();
     }
 
@@ -51,6 +60,8 @@ public class GetQuizAsyncTask extends AsyncTask<String, String, ArrayList<Questi
         try {
             resp = client.execute(uri);
 
+            HttpEntity entity = resp.getEntity();
+
             StatusLine status = resp.getStatusLine();
             if (status.getStatusCode() != 200) {
                 Log.d("VGBT", "HTTP error, invalid server status code: " + resp.getStatusLine());
@@ -58,7 +69,40 @@ public class GetQuizAsyncTask extends AsyncTask<String, String, ArrayList<Questi
 
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
-            Document doc = builder.parse(resp.getEntity().getContent());
+            InputStream is = entity.getContent();
+/*
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+            byte[] buffer = new byte[1024];
+            int count = 0;
+            int n = 0;
+            while (-1 != (n = is.read(buffer))) {
+                baos.write(buffer, 0, n);
+                count += n;
+            }
+
+            byte[] bytes = baos.toByteArray();
+*/
+            builder.setErrorHandler(new ErrorHandler() {
+                @Override
+                public void warning(SAXParseException exception) throws SAXException {
+                    Log.e("VGBT", exception.getMessage());
+                }
+
+                @Override
+                public void error(SAXParseException exception) throws SAXException {
+                    Log.e("VGBT", exception.getMessage());
+                }
+
+                @Override
+                public void fatalError(SAXParseException exception) throws SAXException {
+                    Log.e("VGBT", exception.getMessage());
+                }
+            });
+            Document doc = builder.parse(is);
+
+
+            //String html =  is.toString();
 
             ArrayList<Question> questionObjectList = new ArrayList<>();
             NodeList questions = doc.getElementsByTagName("question");
@@ -67,8 +111,16 @@ public class GetQuizAsyncTask extends AsyncTask<String, String, ArrayList<Questi
                 Question questionObject = new Question();
 
                 Element question = (Element)questions.item(i);
-                questionObject.setAnswerIndex(Short.parseShort(question.getAttribute("answer")));
-                questionObject.setExtractId(Integer.parseInt(question.getAttribute("id")));
+
+                try {
+                    questionObject.setAnswerIndex(Short.parseShort(question.getAttribute("answer")));
+                    questionObject.setExtractId(Integer.parseInt(question.getAttribute("id")));
+                }
+                catch (Exception e)
+                {
+                    return null;
+                }
+
                 NodeList answers = question.getElementsByTagName("answer");
 
                 ArrayList<String> answersString = new ArrayList<String>();

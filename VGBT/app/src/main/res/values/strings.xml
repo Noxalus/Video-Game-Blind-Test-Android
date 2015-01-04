@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Video Game Blind Test</string>
+    <string name="app_name">VGBT</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_quiz">QuizActivity</string>
-
     <string name="baseUrl">http://www.final-rpg.com/telecharger/data/blind/extraits/</string>
-    <string name="api">http://api.final-rpg.com/?questionNumber=30&amp;type=nom</string>
+    <string name="api">http://api.final-rpg.com</string>
+    <string name="title_activity_proposal">ProposalActivity</string>
+    <string name="notConnected">It seems that you are not connected to internet :\'(\n\n Sorry, but you need to be connected to play, please check your connection.</string>
+    <string name="title_activity_mode">ModeActivity</string>
+    <string name="title_activity_result">ResultActivity</string>
+
 </resources>

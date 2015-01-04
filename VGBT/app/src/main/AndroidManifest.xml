@@ -3,14 +3,15 @@
     package="vgbt.noxalus.com.videogameblindtest" >
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -19,8 +20,21 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".QuizActivity"
+            android:name=".activities.QuizActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_activity_quiz" >
+        </activity>
+        <activity
+            android:name=".activities.ProposalActivity"
+            android:label="@string/title_activity_proposal" >
+        </activity>
+        <activity
+            android:name=".activities.ModeActivity"
+            android:label="@string/title_activity_mode" >
+        </activity>
+        <activity
+            android:name=".activities.ResultActivity"
+            android:label="@string/title_activity_result" >
         </activity>
     </application>
 

@@ -1,8 +1,8 @@
-package vgbt.noxalus.com.videogameblindtest;
+package vgbt.noxalus.com.videogameblindtest.activities;
 
+import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.PaintDrawable;
 import android.media.AudioManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -18,6 +18,8 @@ import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -25,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
+import vgbt.noxalus.com.videogameblindtest.R;
 import vgbt.noxalus.com.videogameblindtest.entities.Question;
 import vgbt.noxalus.com.videogameblindtest.tasks.AsyncResponse;
 import vgbt.noxalus.com.videogameblindtest.tasks.GetQuizAsyncTask;
@@ -35,8 +38,14 @@ public class QuizActivity extends ActionBarActivity implements OnClickListener, 
     private SeekBar seekBarProgress;
     public TextView musicNameTextView;
     public TextView currentTimeTextView;
+    public TextView scoreTextView;
+    public ArrayList<ImageView> lifeIconImageViewList;
 
     private HashMap<Integer, Button> answerButtonMap;
+
+    private boolean mediaPlayerIsReleased = false;
+
+    Handler nextQuestionHandler = new Handler();
 
     private MediaPlayer mediaPlayer;
     private int mediaFileLengthInMilliseconds;
@@ -45,7 +54,14 @@ public class QuizActivity extends ActionBarActivity implements OnClickListener, 
 
     private ArrayList<Question> questions = null;
     private int currentQuestionId = -1;
-    private int life = 2;
+    private int score = 0;
+    private int life = 3;
+    private boolean answerGiven = false;
+
+    String mode;
+
+    MediaPlayer correctSound;
+    MediaPlayer wrongSound;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,10 +69,12 @@ public class QuizActivity extends ActionBarActivity implements OnClickListener, 
         setContentView(R.layout.activity_quiz);
 
         initView();
-
-
-
         getQuiz();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
     }
 
     @Override
@@ -64,7 +82,7 @@ public class QuizActivity extends ActionBarActivity implements OnClickListener, 
     {
         super.onPause();
 
-        if (mediaPlayer.isPlaying())
+        if (!mediaPlayerIsReleased && mediaPlayer.isPlaying())
             mediaPlayer.stop();
     }
 
@@ -74,15 +92,51 @@ public class QuizActivity extends ActionBarActivity implements OnClickListener, 
         // we need to create a new instance each time
         GetQuizAsyncTask getQuizAsyncTask = new GetQuizAsyncTask();
         getQuizAsyncTask.delegate = this;
-        getQuizAsyncTask.execute(getResources().getString(R.string.api));
+
+        getQuizAsyncTask.execute(getResources().getString(R.string.api) + "?type=" + mode + "&questionNumber=30");
     }
 
     private void initView() {
-        buttonPlayPause = (ImageButton)findViewById(R.id.ButtonTestPlayPause);
+        correctSound = MediaPlayer.create(QuizActivity.this, R.raw.correct);
+        wrongSound = MediaPlayer.create(QuizActivity.this, R.raw.wrong);
+
+        buttonPlayPause = (ImageButton)findViewById(R.id.imageButton);
         buttonPlayPause.setOnClickListener(this);
 
-        musicNameTextView = (TextView)findViewById(R.id.musicName);
-        currentTimeTextView = (TextView)findViewById(R.id.currentTime);
+        //musicNameTextView = (TextView)findViewById(R.id.musicName);
+        //currentTimeTextView = (TextView)findViewById(R.id.currentTime);
+
+        scoreTextView = (TextView)findViewById(R.id.scoreTextView);
+
+        nextQuestionHandler = new Handler();
+
+        // Create life icons
+        lifeIconImageViewList = new ArrayList<ImageView>();
+        for (int i = 0; i < life; i++) {
+            ImageView lifeIcon = new ImageView(getApplicationContext());
+            lifeIcon.setImageDrawable(getResources().getDrawable(R.drawable.life));
+            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(64, 64);
+            layoutParams.addRule(RelativeLayout.ALIGN_BOTTOM, scoreTextView.getId());
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+
+            if (i == 0)
+                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            else
+                layoutParams.addRule(RelativeLayout.LEFT_OF, 4242 + i - 1);
+
+            lifeIcon.setLayoutParams(layoutParams);
+
+            RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.RootRelativeLayout);
+
+            lifeIcon.setId(4242 + i);
+
+            lifeIconImageViewList.add(lifeIcon);
+
+            relativeLayout.addView(lifeIcon);
+        }
+
+        mode = getIntent().getStringExtra("mode");
+        mode = "nom";
 
         answerButtonMap = new HashMap<Integer, Button>();
 
@@ -96,9 +150,11 @@ public class QuizActivity extends ActionBarActivity implements OnClickListener, 
             answerButtonMap.get(i).setOnClickListener(buttonClickListener);
         }
 
+        /*
         seekBarProgress = (SeekBar)findViewById(R.id.SeekBarTestPlay);
         seekBarProgress.setMax(99); // It means 100% .0-99
         seekBarProgress.setOnTouchListener(this);
+        */
 
         mediaPlayer = new MediaPlayer();
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -120,11 +176,10 @@ public class QuizActivity extends ActionBarActivity implements OnClickListener, 
                     */
 
                     mediaPlayer.start();
-
-                    musicNameTextView.setText("extrait" + questions.get(currentQuestionId).getExtractId() + ".mp3 (" + time + ")");
-
                     buttonPlayPause.setImageResource(R.drawable.button_pause);
-                    primarySeekBarProgressUpdater();
+
+                    //musicNameTextView.setText("extrait" + questions.get(currentQuestionId).getExtractId() + ".mp3 (" + time + ")");
+                    //primarySeekBarProgressUpdater();
                 }
             }
         });
@@ -132,6 +187,7 @@ public class QuizActivity extends ActionBarActivity implements OnClickListener, 
 
     private void nextQuestion()
     {
+        answerGiven = false;
         currentQuestionId++;
 
         if (currentQuestionId >= questions.size())
@@ -142,7 +198,7 @@ public class QuizActivity extends ActionBarActivity implements OnClickListener, 
         }
 
         for (int i = 0; i < 4; i++) {
-            answerButtonMap.get(i).setBackgroundColor(Color.GRAY);
+            answerButtonMap.get(i).setBackgroundColor(Color.CYAN);
             answerButtonMap.get(i).setText(questions.get(currentQuestionId).getAnswers().get(i));
         }
 
@@ -186,7 +242,7 @@ public class QuizActivity extends ActionBarActivity implements OnClickListener, 
 
     @Override
     public void onClick(View v) {
-        if(v.getId() == R.id.ButtonTestPlayPause){
+        if(v.getId() == R.id.imageButton){
             loadMusic();
 
             if(!mediaPlayer.isPlaying()){
@@ -197,20 +253,21 @@ public class QuizActivity extends ActionBarActivity implements OnClickListener, 
                 buttonPlayPause.setImageResource(R.drawable.button_play);
             }
 
-            primarySeekBarProgressUpdater();
+            //primarySeekBarProgressUpdater();
         }
     }
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
+        /*
         if(v.getId() == R.id.SeekBarTestPlay){
-
             if(mediaPlayer.isPlaying()) {
                 SeekBar sb = (SeekBar)v;
                 int playPositionInMilliseconds = (mediaFileLengthInMilliseconds / 100) * sb.getProgress();
                 mediaPlayer.seekTo(playPositionInMilliseconds);
             }
         }
+        */
         return false;
     }
 
@@ -261,8 +318,10 @@ public class QuizActivity extends ActionBarActivity implements OnClickListener, 
 
     @Override
     public void processFinish(ArrayList<Question> output) {
-        questions = output;
-        nextQuestion();
+        if (!mediaPlayerIsReleased) {
+            questions = output;
+            nextQuestion();
+        }
     }
 
     public class ButtonClickListener implements View.OnClickListener
@@ -281,14 +340,46 @@ public class QuizActivity extends ActionBarActivity implements OnClickListener, 
         @Override
         public void onClick(View v)
         {
-            if (questions.get(currentQuestionId).getAnswerIndex() == id) {
-                button.setBackgroundColor(Color.GREEN);
-                // TODO: Play sound
-                nextQuestion();
-            }
-            else {
-                button.setBackgroundColor(Color.RED);
-                life--;
+            if (!answerGiven) {
+                if (questions.get(currentQuestionId).getAnswerIndex() == id) {
+                    button.setBackgroundColor(Color.GREEN);
+
+                    correctSound.start();
+                    score++;
+                    scoreTextView.setText(Integer.toString(score));
+                } else {
+                    wrongSound.start();
+
+                    int answerId = questions.get(currentQuestionId).getAnswerIndex();
+                    answerButtonMap.get(answerId).setBackgroundColor(Color.GREEN);
+                    button.setBackgroundColor(Color.RED);
+                    life--;
+
+                    if (life <= 0)
+                    {
+                        if (mediaPlayer.isPlaying())
+                            mediaPlayer.stop();
+
+                        mediaPlayer.release();
+                        mediaPlayerIsReleased = true;
+
+                        Intent intent = new Intent(QuizActivity.this, ResultActivity.class);
+                        intent.putExtra("score", score);
+                        startActivity(intent);
+
+                        return;
+                    }
+
+                    lifeIconImageViewList.get(life).setImageDrawable(getResources().getDrawable(R.drawable.life_empty));
+                }
+
+                answerGiven = true;
+
+                nextQuestionHandler.postDelayed(new Runnable() {
+                    public void run() {
+                        nextQuestion();
+                    }
+                }, 1000);
             }
         }
     }
