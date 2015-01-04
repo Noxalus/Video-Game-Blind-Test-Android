@@ -7,5 +7,5 @@
     <string name="title_activity_quiz">QuizActivity</string>
 
     <string name="baseUrl">http://www.final-rpg.com/telecharger/data/blind/extraits/</string>
-    <string name="api">http://api.final-rpg.com</string>
+    <string name="api">http://api.final-rpg.com/?questionNumber=30&amp;type=nom</string>
 </resources>

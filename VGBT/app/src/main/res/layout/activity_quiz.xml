@@ -33,60 +33,54 @@
         android:layout_centerHorizontal="true"
         android:contentDescription="TestPlayPause"
         android:onClick="onClick"
-        android:src="@drawable/button_play" />
+        android:src="@drawable/button_play"
+        android:layout_above="@+id/SeekBarTestPlay" />
 
     <SeekBar
         android:id="@+id/SeekBarTestPlay"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/ButtonTestPlayPause" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Next"
-        android:id="@+id/nextButton"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignParentStart="true" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/currentTime"
         android:layout_below="@+id/SeekBarTestPlay"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignParentLeft="true" />
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="[ANSWER1]"
         android:id="@+id/answerButton1"
         android:layout_below="@+id/currentTime"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignParentLeft="true"
+        android:minHeight="60dp" />
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="[ANSWER2]"
         android:id="@+id/answerButton2"
         android:layout_below="@+id/answerButton1"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignParentLeft="true"
+        android:minHeight="60dp" />
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="[ANSWER3]"
         android:id="@+id/answerButton3"
         android:layout_below="@+id/answerButton2"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignParentLeft="true"
+        android:minHeight="60dp" />
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="[ANSWER4]"
         android:id="@+id/answerButton4"
         android:layout_below="@+id/answerButton3"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignParentLeft="true"
+        android:minHeight="60dp" />
 
 </RelativeLayout>

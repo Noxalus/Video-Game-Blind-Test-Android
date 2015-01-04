@@ -1,5 +1,8 @@
 package vgbt.noxalus.com.videogameblindtest;
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.PaintDrawable;
 import android.media.AudioManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -19,6 +22,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 import vgbt.noxalus.com.videogameblindtest.entities.Question;
@@ -32,10 +36,7 @@ public class QuizActivity extends ActionBarActivity implements OnClickListener, 
     public TextView musicNameTextView;
     public TextView currentTimeTextView;
 
-    public Button answerButton1;
-    public Button answerButton2;
-    public Button answerButton3;
-    public Button answerButton4;
+    private HashMap<Integer, Button> answerButtonMap;
 
     private MediaPlayer mediaPlayer;
     private int mediaFileLengthInMilliseconds;
@@ -44,6 +45,7 @@ public class QuizActivity extends ActionBarActivity implements OnClickListener, 
 
     private ArrayList<Question> questions = null;
     private int currentQuestionId = -1;
+    private int life = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +53,9 @@ public class QuizActivity extends ActionBarActivity implements OnClickListener, 
         setContentView(R.layout.activity_quiz);
 
         initView();
+
+
+
         getQuiz();
     }
 
@@ -65,9 +70,10 @@ public class QuizActivity extends ActionBarActivity implements OnClickListener, 
 
     private void getQuiz()
     {
+        // AsyncTask can't be executed multiple times
+        // we need to create a new instance each time
         GetQuizAsyncTask getQuizAsyncTask = new GetQuizAsyncTask();
         getQuizAsyncTask.delegate = this;
-
         getQuizAsyncTask.execute(getResources().getString(R.string.api));
     }
 
@@ -78,10 +84,17 @@ public class QuizActivity extends ActionBarActivity implements OnClickListener, 
         musicNameTextView = (TextView)findViewById(R.id.musicName);
         currentTimeTextView = (TextView)findViewById(R.id.currentTime);
 
-        answerButton1 = (Button)findViewById(R.id.answerButton1);
-        answerButton2 = (Button)findViewById(R.id.answerButton2);
-        answerButton3 = (Button)findViewById(R.id.answerButton3);
-        answerButton4 = (Button)findViewById(R.id.answerButton4);
+        answerButtonMap = new HashMap<Integer, Button>();
+
+        answerButtonMap.put(0, (Button)findViewById(R.id.answerButton1));
+        answerButtonMap.put(1, (Button)findViewById(R.id.answerButton2));
+        answerButtonMap.put(2, (Button)findViewById(R.id.answerButton3));
+        answerButtonMap.put(3, (Button)findViewById(R.id.answerButton4));
+
+        for (int i = 0; i < 4; i++) {
+            ButtonClickListener buttonClickListener = new ButtonClickListener(i, answerButtonMap.get(i));
+            answerButtonMap.get(i).setOnClickListener(buttonClickListener);
+        }
 
         seekBarProgress = (SeekBar)findViewById(R.id.SeekBarTestPlay);
         seekBarProgress.setMax(99); // It means 100% .0-99
@@ -115,28 +128,26 @@ public class QuizActivity extends ActionBarActivity implements OnClickListener, 
                 }
             }
         });
-
-        Button nextButton = (Button)findViewById(R.id.nextButton);
-        nextButton.setOnClickListener((new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                nextQuestion();
-            }
-        }));
     }
 
     private void nextQuestion()
     {
         currentQuestionId++;
 
-        answerButton1.setText(questions.get(currentQuestionId).getAnswers().get(0));
-        answerButton2.setText(questions.get(currentQuestionId).getAnswers().get(1));
-        answerButton3.setText(questions.get(currentQuestionId).getAnswers().get(2));
-        answerButton4.setText(questions.get(currentQuestionId).getAnswers().get(3));
-
-        if (mediaPlayer.isPlaying()) {
-            mediaPlayer.stop();
+        if (currentQuestionId >= questions.size())
+        {
+            currentQuestionId = -1;
+            getQuiz();
+            return;
         }
+
+        for (int i = 0; i < 4; i++) {
+            answerButtonMap.get(i).setBackgroundColor(Color.GRAY);
+            answerButtonMap.get(i).setText(questions.get(currentQuestionId).getAnswers().get(i));
+        }
+
+        if (mediaPlayer.isPlaying())
+            mediaPlayer.stop();
 
         mediaPlayer.reset();
 
@@ -252,5 +263,33 @@ public class QuizActivity extends ActionBarActivity implements OnClickListener, 
     public void processFinish(ArrayList<Question> output) {
         questions = output;
         nextQuestion();
+    }
+
+    public class ButtonClickListener implements View.OnClickListener
+    {
+        int id;
+        Button button;
+
+        public ButtonClickListener(int id, Button button)
+        {
+            super();
+
+            this.id = id;
+            this.button = button;
+        }
+
+        @Override
+        public void onClick(View v)
+        {
+            if (questions.get(currentQuestionId).getAnswerIndex() == id) {
+                button.setBackgroundColor(Color.GREEN);
+                // TODO: Play sound
+                nextQuestion();
+            }
+            else {
+                button.setBackgroundColor(Color.RED);
+                life--;
+            }
+        }
     }
 }
