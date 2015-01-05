@@ -211,7 +211,6 @@ public class QuizActivity extends Activity implements OnClickListener, OnTouchLi
 
     private void nextQuestion()
     {
-        answerGiven = false;
         currentQuestionId++;
 
         if (currentQuestionId >= questions.size())
@@ -371,6 +370,7 @@ public class QuizActivity extends Activity implements OnClickListener, OnTouchLi
                             startActivity(intent);
                         }
                         else {
+                            answerGiven = false;
                             if (!mediaPlayer.isPlaying() && musicIsReady)
                                 playMusic();
                             else
