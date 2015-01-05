@@ -1,5 +1,6 @@
 package vgbt.noxalus.com.videogameblindtest.activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -17,7 +18,7 @@ import android.widget.Toast;
 import vgbt.noxalus.com.videogameblindtest.R;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,28 +55,6 @@ public class MainActivity extends ActionBarActivity {
             }
         });
         */
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     private boolean isNetworkAvailable() {
