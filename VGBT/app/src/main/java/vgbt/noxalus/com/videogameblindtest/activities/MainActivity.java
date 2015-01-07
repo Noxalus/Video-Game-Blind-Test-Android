@@ -140,7 +140,7 @@ public class MainActivity extends Activity implements GameHelper.GameHelperListe
 
     public void getLeaderboardGPGS() {
         if (gameHelper.isSignedIn()) {
-            startActivityForResult(Games.Leaderboards.getLeaderboardIntent(gameHelper.getApiClient(), "CgkIp-XV7OYeEAIQAA"), 100);
+            startActivityForResult(Games.Leaderboards.getAllLeaderboardsIntent(gameHelper.getApiClient()), 100);
         } else if (!gameHelper.isConnecting()) {
             loginGPGS();
         }
