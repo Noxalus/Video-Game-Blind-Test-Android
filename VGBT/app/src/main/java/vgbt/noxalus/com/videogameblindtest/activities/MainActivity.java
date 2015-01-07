@@ -35,7 +35,7 @@ public class MainActivity extends Activity {
                 }
                 else
                 {
-                    Toast toast = Toast.makeText(getApplicationContext(), getResources().getString(R.string.notConnected), Toast.LENGTH_LONG);
+                    Toast toast = Toast.makeText(getApplicationContext(), getResources().getString(R.string.not_connected), Toast.LENGTH_LONG);
                     TextView textView = (TextView) toast.getView().findViewById(android.R.id.message);
                     if( textView != null)
                         textView.setGravity(Gravity.CENTER);

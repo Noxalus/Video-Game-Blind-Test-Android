@@ -9,6 +9,7 @@ import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnBufferingUpdateListener;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Handler;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -61,6 +62,8 @@ public class QuizActivity extends Activity implements OnClickListener, OnTouchLi
 
     MediaPlayer correctSound;
     MediaPlayer wrongSound;
+
+    long startTime = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -203,6 +206,8 @@ public class QuizActivity extends Activity implements OnClickListener, OnTouchLi
         mediaPlayer.start();
         buttonPlayPause.setImageResource(R.drawable.button_pause);
 
+        startTime = System.currentTimeMillis();
+
         //musicNameTextView.setText("extrait" + questions.get(currentQuestionId).getExtractId() + ".mp3 (" + time + ")");
         //primarySeekBarProgressUpdater();
     }
@@ -222,7 +227,7 @@ public class QuizActivity extends Activity implements OnClickListener, OnTouchLi
     private void loadMusic()
     {
         try {
-            String currentMusicUrl = "http://api.final-rpg.com/mp3.php?id=" + questions.get(currentQuestionId).getExtractId() + "&time=10";
+            String currentMusicUrl = getResources().getString(R.string.api)  + "/mp3.php?id=" + questions.get(currentQuestionId).getExtractId() + "&time=" + getResources().getInteger(R.integer.second_to_stream);
             mediaPlayer.setDataSource(currentMusicUrl);
             mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mediaPlayer.prepareAsync();
@@ -327,7 +332,20 @@ public class QuizActivity extends Activity implements OnClickListener, OnTouchLi
                 if (questions.get(currentQuestionId).getAnswerIndex() == id) {
                     button.setBackgroundResource(R.drawable.button_correct);
                     correctSound.start();
-                    score++;
+
+                    long millis = System.currentTimeMillis() - startTime;
+                    int seconds = (int) (millis / 1000);
+                    seconds = seconds % 60;
+
+                    int secondToStream = getResources().getInteger(R.integer.second_to_stream);
+                    int maxPointForExtract = getResources().getInteger(R.integer.max_point_for_extract);
+                    float factor = (float)secondToStream / (float)maxPointForExtract;
+
+                    if (seconds >= secondToStream || millis < 750)
+                        score++;
+                    else
+                        score += Math.ceil((secondToStream - seconds) / factor);
+
                     scoreTextView.setText(Integer.toString(score));
                 } else {
                     wrongSound.start();

@@ -5,11 +5,14 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_quiz">QuizActivity</string>
-    <string name="baseUrl">http://www.final-rpg.com/telecharger/data/blind/extraits/</string>
     <string name="api">http://api.final-rpg.com</string>
     <string name="title_activity_proposal">ProposalActivity</string>
-    <string name="notConnected">It seems that you are not connected to internet :\'(\n\n Sorry, but you need to be connected to play, please check your connection.</string>
+    <string name="not_connected">It seems that you are not connected to internet :\'(\n\n Sorry, but you need to be connected to play, please check your connection.</string>
     <string name="title_activity_mode">ModeActivity</string>
     <string name="title_activity_result">ResultActivity</string>
+
+
+    <integer name="second_to_stream">15</integer>
+    <integer name="max_point_for_extract">5</integer>
 
 </resources>
