@@ -339,12 +339,13 @@ public class QuizActivity extends Activity implements OnClickListener, OnTouchLi
 
                     int secondToStream = getResources().getInteger(R.integer.second_to_stream);
                     int maxPointForExtract = getResources().getInteger(R.integer.max_point_for_extract);
-                    float factor = (float)secondToStream / (float)maxPointForExtract;
+                    int maxSecondToAnswer = getResources().getInteger(R.integer.max_seconds_to_answer);
+                    float factor = (float)maxSecondToAnswer / (float)maxPointForExtract;
 
-                    if (seconds >= secondToStream || millis < 750)
+                    if (seconds >= maxSecondToAnswer || millis < 750)
                         score++;
                     else
-                        score += Math.ceil((secondToStream - seconds) / factor);
+                        score += Math.ceil((maxSecondToAnswer - seconds) / factor);
 
                     scoreTextView.setText(Integer.toString(score));
                 } else {

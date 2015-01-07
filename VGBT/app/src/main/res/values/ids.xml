@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Google Play game services IDs.
+Save this file as res/values/games-ids.xml in your project.
+-->
+<resources>
+    <string name="app_id">1058400465575</string>
+    <string name="achievement_i_tried_to_guess_the_name">CgkIp-XV7OYeEAIQBA</string>
+    <string name="achievement_i_tried_to_guess_the_game">CgkIp-XV7OYeEAIQBQ</string>
+    <string name="achievement_i_tried_to_guess_the_composer">CgkIp-XV7OYeEAIQBg</string>
+    <string name="achievement_i_dont_suck_really...">CgkIp-XV7OYeEAIQBw</string>
+    <string name="achievement_virtuoso">CgkIp-XV7OYeEAIQCA</string>
+    <string name="leaderboard_guess_the_name">CgkIp-XV7OYeEAIQAA</string>
+    <string name="leaderboard_guess_the_game">CgkIp-XV7OYeEAIQAQ</string>
+    <string name="leaderboard_guess_the_composer">CgkIp-XV7OYeEAIQAg</string>
+</resources>
