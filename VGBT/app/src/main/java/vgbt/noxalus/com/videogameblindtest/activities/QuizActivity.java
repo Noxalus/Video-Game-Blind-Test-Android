@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.media.AudioManager;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnBufferingUpdateListener;
 import android.media.MediaPlayer.OnCompletionListener;
@@ -224,8 +222,9 @@ public class QuizActivity extends Activity implements OnClickListener, OnTouchLi
     private void loadMusic()
     {
         try {
-            String currentMusicUrl = getResources().getString(R.string.baseUrl) + "extrait" + questions.get(currentQuestionId).getExtractId() + ".mp3";
+            String currentMusicUrl = "http://api.final-rpg.com/mp3.php?id=" + questions.get(currentQuestionId).getExtractId() + "&time=10";
             mediaPlayer.setDataSource(currentMusicUrl);
+            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mediaPlayer.prepareAsync();
             musicIsReady = false;
         } catch (Exception e) {
