@@ -60,6 +60,17 @@ public class MainActivity extends Activity implements GameHelper.GameHelperListe
         });
         */
 
+        final Button achievementsButton = (Button) findViewById(R.id.achievementsButton);
+        achievementsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (getSignedInGPGS())
+                    getAchievementsGPGS();
+                else
+                    loginGPGS();
+            }
+        });
+
         final Button leaderBoardButton = (Button) findViewById(R.id.leaderboardButton);
         leaderBoardButton.setOnClickListener(new View.OnClickListener() {
             @Override

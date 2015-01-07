@@ -12,8 +12,9 @@
     <string name="title_activity_result">ResultActivity</string>
 
 
-    <integer name="second_to_stream">15</integer>
+    <integer name="second_to_stream">30</integer>
     <integer name="max_point_for_extract">5</integer>
     <integer name="max_seconds_to_answer">10</integer>
+    <integer name="number_of_question_to_ask">30</integer>
 
 </resources>

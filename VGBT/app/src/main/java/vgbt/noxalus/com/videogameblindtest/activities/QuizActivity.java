@@ -104,7 +104,7 @@ public class QuizActivity extends Activity implements OnClickListener, OnTouchLi
         GetQuizAsyncTask getQuizAsyncTask = new GetQuizAsyncTask();
         getQuizAsyncTask.delegate = this;
 
-        getQuizAsyncTask.execute(getResources().getString(R.string.api) + "?type=" + mode + "&questionNumber=30");
+        getQuizAsyncTask.execute(getResources().getString(R.string.api) + "?type=" + mode + "&questionNumber=" + getResources().getInteger(R.integer.number_of_question_to_ask));
     }
 
     @Override
