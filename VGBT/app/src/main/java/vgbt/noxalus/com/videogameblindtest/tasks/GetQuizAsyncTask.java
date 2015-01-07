@@ -1,4 +1,4 @@
-package vgbt.noxalus.com.videogameblindtest.tasks;
+package com.noxalus.vgbt.videogameblindtest.tasks;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -33,7 +33,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import vgbt.noxalus.com.videogameblindtest.entities.Question;
+import com.noxalus.vgbt.videogameblindtest.entities.Question;
 
 public class GetQuizAsyncTask extends AsyncTask<String, String, ArrayList<Question>>
 {

@@ -5,7 +5,7 @@ android {
     buildToolsVersion "21.1.2"
 
     defaultConfig {
-        applicationId "vgbt.noxalus.com.videogameblindtest"
+        applicationId "com.noxalus.vgbt.videogameblindtest"
         minSdkVersion 15
         targetSdkVersion 21
         versionCode 2

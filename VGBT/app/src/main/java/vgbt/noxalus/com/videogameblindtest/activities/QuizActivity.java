@@ -1,4 +1,4 @@
-package vgbt.noxalus.com.videogameblindtest.activities;
+package com.noxalus.vgbt.videogameblindtest.activities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -24,10 +24,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
-import vgbt.noxalus.com.videogameblindtest.R;
-import vgbt.noxalus.com.videogameblindtest.entities.Question;
-import vgbt.noxalus.com.videogameblindtest.tasks.AsyncResponse;
-import vgbt.noxalus.com.videogameblindtest.tasks.GetQuizAsyncTask;
+import com.noxalus.vgbt.videogameblindtest.R;
+import com.noxalus.vgbt.videogameblindtest.entities.Question;
+import com.noxalus.vgbt.videogameblindtest.tasks.AsyncResponse;
+import com.noxalus.vgbt.videogameblindtest.tasks.GetQuizAsyncTask;
 
 public class QuizActivity extends Activity implements OnClickListener, OnTouchListener, OnCompletionListener, OnBufferingUpdateListener, AsyncResponse {
 

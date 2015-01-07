@@ -1,4 +1,4 @@
-package vgbt.noxalus.com.videogameblindtest;
+package com.noxalus.vgbt.videogameblindtest;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
