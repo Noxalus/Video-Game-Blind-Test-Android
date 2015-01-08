@@ -385,6 +385,7 @@ public class QuizActivity extends Activity implements OnClickListener, OnTouchLi
 
                             Intent intent = new Intent(QuizActivity.this, ResultActivity.class);
                             intent.putExtra("score", score);
+                            intent.putExtra("mode", mode);
                             startActivity(intent);
                         }
                         else {
