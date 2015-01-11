@@ -1,6 +1,5 @@
 package com.noxalus.vgbt.videogameblindtest.activities;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -13,16 +12,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.games.Games;
-import com.google.example.games.basegameutils.GameHelper;
+import com.google.example.games.basegameutils.BaseGameActivity;
 import com.noxalus.vgbt.videogameblindtest.R;
 
 
-public class MainActivity extends Activity implements GameHelper.GameHelperListener {
-
-    private GameHelper gameHelper;
+public class MainActivity extends BaseGameActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -61,7 +59,7 @@ public class MainActivity extends Activity implements GameHelper.GameHelperListe
         achievementsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (getSignedInGPGS())
+                if (isSignedIn())
                     getAchievementsGPGS();
                 else
                     loginGPGS();
@@ -72,19 +70,12 @@ public class MainActivity extends Activity implements GameHelper.GameHelperListe
         leaderBoardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (getSignedInGPGS())
+                if (isSignedIn())
                     getLeaderboardGPGS();
                 else
                     loginGPGS();
             }
         });
-
-        if (gameHelper == null) {
-            gameHelper = new GameHelper(this, GameHelper.CLIENT_GAMES);
-            gameHelper.enableDebugLog(true);
-        }
-
-        gameHelper.setup(this);
     }
 
     private boolean isNetworkAvailable() {
@@ -96,58 +87,37 @@ public class MainActivity extends Activity implements GameHelper.GameHelperListe
     @Override
     public void onStart(){
         super.onStart();
-        gameHelper.onStart(this);
     }
 
     @Override
     public void onStop(){
         super.onStop();
-        gameHelper.onStop();
     }
 
-    @Override
-    public void onActivityResult(int request, int response, Intent data) {
-        super.onActivityResult(request, response, data);
-        gameHelper.onActivityResult(request, response, data);
-    }
-
-    public boolean getSignedInGPGS() {
-        return gameHelper.isSignedIn();
-    }
-
-    public void loginGPGS() {
+    private void loginGPGS() {
         try {
             runOnUiThread(new Runnable(){
                 public void run() {
-                    gameHelper.beginUserInitiatedSignIn();
+                    getGameHelper().beginUserInitiatedSignIn();
                 }
             });
         } catch (final Exception ex) {
         }
     }
 
-    public void submitScoreGPGS(int score) {
-        Games.Leaderboards.submitScore(gameHelper.getApiClient(), "CgkIp-XV7OYeEAIQAA", score);
-    }
-
-    public void unlockAchievementGPGS(String achievementId) {
-        Games.Achievements.unlock(gameHelper.getApiClient(), achievementId);
+    @Override
+    public void onActivityResult(int request, int response, Intent data) {
+        super.onActivityResult(request, response, data);
     }
 
     public void getLeaderboardGPGS() {
-        if (gameHelper.isSignedIn()) {
-            startActivityForResult(Games.Leaderboards.getAllLeaderboardsIntent(gameHelper.getApiClient()), 100);
-        } else if (!gameHelper.isConnecting()) {
-            loginGPGS();
-        }
+        if (isSignedIn())
+            startActivityForResult(Games.Leaderboards.getAllLeaderboardsIntent(getApiClient()), 100);
     }
 
     public void getAchievementsGPGS() {
-        if (gameHelper.isSignedIn()) {
-            startActivityForResult(Games.Achievements.getAchievementsIntent(gameHelper.getApiClient()), 100);
-        } else if (!gameHelper.isConnecting()) {
-            loginGPGS();
-        }
+        if (isSignedIn())
+            startActivityForResult(Games.Achievements.getAchievementsIntent(getApiClient()), 100);
     }
 
     @Override
