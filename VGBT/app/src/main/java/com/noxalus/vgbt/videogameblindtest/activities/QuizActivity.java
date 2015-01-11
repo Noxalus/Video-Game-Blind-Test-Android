@@ -45,6 +45,8 @@ public class QuizActivity extends Activity implements OnClickListener, OnTouchLi
     private boolean waitToPlayMusic = false;
     private boolean musicIsReady = false;
 
+    private boolean answersReady = false;
+
     Handler nextQuestionHandler = new Handler();
 
     private MediaPlayer mediaPlayer;
@@ -80,6 +82,21 @@ public class QuizActivity extends Activity implements OnClickListener, OnTouchLi
     }
 
     @Override
+    public void onStart()
+    {
+        super.onStart();
+    }
+
+    @Override
+    public void onStop()
+    {
+        super.onStop();
+
+        mediaPlayer.release();
+        mediaPlayerIsReleased = true;
+    }
+
+    @Override
     public void onPause()
     {
         super.onPause();
@@ -111,6 +128,7 @@ public class QuizActivity extends Activity implements OnClickListener, OnTouchLi
     public void processFinish(ArrayList<Question> output) {
         if (!mediaPlayerIsReleased) {
             questions = output;
+            answersReady = true;
             nextQuestion();
             updateAnswers();
             loadMusic();
@@ -219,6 +237,7 @@ public class QuizActivity extends Activity implements OnClickListener, OnTouchLi
         if (currentQuestionId >= questions.size())
         {
             currentQuestionId = -1;
+            answersReady = false;
             getQuiz();
             return;
         }
@@ -328,7 +347,7 @@ public class QuizActivity extends Activity implements OnClickListener, OnTouchLi
         @Override
         public void onClick(View v)
         {
-            if (!answerGiven) {
+            if (!answerGiven && answersReady) {
                 if (questions.get(currentQuestionId).getAnswerIndex() == id) {
                     button.setBackgroundResource(R.drawable.button_correct);
                     correctSound.start();
