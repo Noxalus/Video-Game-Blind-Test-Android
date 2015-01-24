@@ -16,11 +16,22 @@ public class ResultActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
+
+        final Button backButton = (Button) findViewById(R.id.backButton);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ResultActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
     public void onStart(){
         super.onStart();
+
+        submitScore();
     }
 
     @Override
@@ -57,15 +68,6 @@ public class ResultActivity extends Activity {
         scoreTextView.setText(Integer.toString(score));
 
         final TextView bestScoreTextView = (TextView) findViewById(R.id.bestScoreTextView);
-
-        final Button backButton = (Button) findViewById(R.id.backButton);
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ResultActivity.this, MainActivity.class);
-                startActivity(intent);
-            }
-        });
 
         SharedPreferences settings = getSharedPreferences("VGBT", 0);
         SharedPreferences.Editor editor = settings.edit();

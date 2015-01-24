@@ -27,7 +27,12 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 if (isNetworkAvailable()) {
+                    /*
                     Intent intent = new Intent(MainActivity.this, ModeActivity.class);
+                    startActivity(intent);
+                    */
+                    Intent intent = new Intent(MainActivity.this, QuizActivity.class);
+                    intent.putExtra("mode", "nom");
                     startActivity(intent);
                 }
                 else
@@ -42,6 +47,7 @@ public class MainActivity extends Activity {
             }
         });
 
+        /*
         final Button achievementsButton = (Button) findViewById(R.id.achievementsButton);
         achievementsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,6 +62,7 @@ public class MainActivity extends Activity {
 
             }
         });
+        */
     }
 
     private boolean isNetworkAvailable() {
