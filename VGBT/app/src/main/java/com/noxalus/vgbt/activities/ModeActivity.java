@@ -1,4 +1,4 @@
-package com.noxalus.vgbt.videogameblindtest.activities;
+package com.noxalus.vgbt.activities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -8,7 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
-import com.noxalus.vgbt.videogameblindtest.R;
+import com.noxalus.vgbt.R;
 
 public class ModeActivity extends Activity {
 

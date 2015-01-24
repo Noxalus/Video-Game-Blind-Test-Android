@@ -1,4 +1,4 @@
-package com.noxalus.vgbt.videogameblindtest.activities;
+package com.noxalus.vgbt.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.games.Games;
 import com.google.example.games.basegameutils.BaseGameActivity;
-import com.noxalus.vgbt.videogameblindtest.R;
+import com.noxalus.vgbt.R;
 
 public class ResultActivity extends BaseGameActivity {
 

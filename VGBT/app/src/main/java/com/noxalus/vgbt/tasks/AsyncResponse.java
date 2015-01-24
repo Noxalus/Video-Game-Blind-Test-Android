@@ -1,8 +1,8 @@
-package com.noxalus.vgbt.videogameblindtest.tasks;
+package com.noxalus.vgbt.tasks;
 
 import java.util.ArrayList;
 
-import com.noxalus.vgbt.videogameblindtest.entities.Question;
+import com.noxalus.vgbt.entities.Question;
 
 public interface AsyncResponse
 {

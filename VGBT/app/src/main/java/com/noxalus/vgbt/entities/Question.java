@@ -1,4 +1,4 @@
-package com.noxalus.vgbt.videogameblindtest.entities;
+package com.noxalus.vgbt.entities;
 
 import java.util.ArrayList;
 

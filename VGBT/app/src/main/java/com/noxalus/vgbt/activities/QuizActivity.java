@@ -1,4 +1,4 @@
-package com.noxalus.vgbt.videogameblindtest.activities;
+package com.noxalus.vgbt.activities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -25,10 +25,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
-import com.noxalus.vgbt.videogameblindtest.R;
-import com.noxalus.vgbt.videogameblindtest.entities.Question;
-import com.noxalus.vgbt.videogameblindtest.tasks.AsyncResponse;
-import com.noxalus.vgbt.videogameblindtest.tasks.GetQuizAsyncTask;
+import com.noxalus.vgbt.R;
+import com.noxalus.vgbt.entities.Question;
+import com.noxalus.vgbt.tasks.AsyncResponse;
+import com.noxalus.vgbt.tasks.GetQuizAsyncTask;
 
 public class QuizActivity extends Activity implements OnClickListener, OnTouchListener, OnCompletionListener, OnBufferingUpdateListener, AsyncResponse {
 
@@ -239,7 +239,6 @@ public class QuizActivity extends Activity implements OnClickListener, OnTouchLi
             currentQuestionId = -1;
             answersReady = false;
             getQuiz();
-            return;
         }
     }
 
@@ -356,7 +355,6 @@ public class QuizActivity extends Activity implements OnClickListener, OnTouchLi
                     int seconds = (int) (millis / 1000);
                     seconds = seconds % 60;
 
-                    int secondToStream = getResources().getInteger(R.integer.second_to_stream);
                     int maxPointForExtract = getResources().getInteger(R.integer.max_point_for_extract);
                     int maxSecondToAnswer = getResources().getInteger(R.integer.max_seconds_to_answer);
                     float factor = (float)maxSecondToAnswer / (float)maxPointForExtract;

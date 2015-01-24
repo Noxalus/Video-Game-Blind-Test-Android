@@ -1,4 +1,4 @@
-package com.noxalus.vgbt.videogameblindtest.activities;
+package com.noxalus.vgbt.activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,8 +13,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.games.Games;
 import com.google.example.games.basegameutils.BaseGameActivity;
-import com.noxalus.vgbt.videogameblindtest.R;
-
+import com.noxalus.vgbt.R;
 
 public class MainActivity extends BaseGameActivity {
 
