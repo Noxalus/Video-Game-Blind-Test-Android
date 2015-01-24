@@ -1,5 +1,6 @@
 package com.noxalus.vgbt.activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -11,11 +12,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.games.Games;
-import com.google.example.games.basegameutils.BaseGameActivity;
 import com.noxalus.vgbt.R;
 
-public class MainActivity extends BaseGameActivity {
+public class MainActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,25 +42,10 @@ public class MainActivity extends BaseGameActivity {
             }
         });
 
-        /*
-        final Button proposalsButton = (Button) findViewById(R.id.proposalsButton);
-        proposalsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, ProposalActivity.class);
-                startActivity(intent);
-            }
-        });
-        */
-
         final Button achievementsButton = (Button) findViewById(R.id.achievementsButton);
         achievementsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isSignedIn())
-                    getAchievementsGPGS();
-                else
-                    loginGPGS();
             }
         });
 
@@ -69,10 +53,7 @@ public class MainActivity extends BaseGameActivity {
         leaderBoardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isSignedIn())
-                    getLeaderboardGPGS();
-                else
-                    loginGPGS();
+
             }
         });
     }
@@ -93,41 +74,14 @@ public class MainActivity extends BaseGameActivity {
         super.onStop();
     }
 
-    private void loginGPGS() {
-        try {
-            runOnUiThread(new Runnable(){
-                public void run() {
-                    getGameHelper().beginUserInitiatedSignIn();
-                }
-            });
-        } catch (final Exception ex) {
-        }
-    }
-
     @Override
     public void onActivityResult(int request, int response, Intent data) {
         super.onActivityResult(request, response, data);
     }
 
     public void getLeaderboardGPGS() {
-        if (isSignedIn())
-            startActivityForResult(Games.Leaderboards.getAllLeaderboardsIntent(getApiClient()), 100);
     }
 
     public void getAchievementsGPGS() {
-        if (isSignedIn())
-            startActivityForResult(Games.Achievements.getAchievementsIntent(getApiClient()), 100);
-    }
-
-    @Override
-    public void onSignInFailed() {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void onSignInSucceeded() {
-        // TODO Auto-generated method stub
-
     }
 }
