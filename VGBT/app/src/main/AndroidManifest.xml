@@ -6,9 +6,6 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-    <uses-sdk android:minSdkVersion="10"
-        android:targetSdkVersion="17"/>
-
     <application
         tools:replace="android:label"
         android:allowBackup="true"
@@ -18,7 +15,8 @@
 
         <activity
             android:name=".activities.MainActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -32,15 +30,16 @@
         </activity>
         <activity
             android:name=".activities.ProposalActivity"
-            android:label="@string/title_activity_proposal" >
+            android:label="@string/title_activity_proposal">
         </activity>
         <activity
             android:name=".activities.ModeActivity"
             android:screenOrientation="portrait"
-            android:label="@string/title_activity_mode" >
+            android:label="@string/title_activity_mode">
         </activity>
         <activity
             android:name=".activities.ResultActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_result" >
         </activity>
     </application>
