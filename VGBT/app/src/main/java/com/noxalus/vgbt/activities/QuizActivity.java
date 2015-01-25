@@ -404,6 +404,7 @@ public class QuizActivity extends Activity implements OnClickListener, OnTouchLi
                             intent.putExtra("score", score);
                             intent.putExtra("mode", mode);
                             startActivity(intent);
+                            finish();
                         }
                         else {
                             answerGiven = false;
