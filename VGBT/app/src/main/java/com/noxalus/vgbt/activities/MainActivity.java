@@ -34,12 +34,7 @@ public class MainActivity extends BaseActivity
             @Override
             public void onClick(View v) {
                 if (isNetworkAvailable()) {
-                    /*
                     Intent intent = new Intent(MainActivity.this, ModeActivity.class);
-                    startActivity(intent);
-                    */
-                    Intent intent = new Intent(MainActivity.this, QuizActivity.class);
-                    intent.putExtra("mode", "nom");
                     startActivity(intent);
                 }
                 else
@@ -58,7 +53,7 @@ public class MainActivity extends BaseActivity
         achievementsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                agsClient.getAchievementsClient().showAchievementsOverlay();
+                getAchievements();
             }
         });
 
@@ -66,7 +61,7 @@ public class MainActivity extends BaseActivity
         leaderBoardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                agsClient.getLeaderboardsClient().showLeaderboardOverlay("name_leaderboard");
+                getLeaderboards();
             }
         });
     }
@@ -92,9 +87,23 @@ public class MainActivity extends BaseActivity
         super.onActivityResult(request, response, data);
     }
 
-    public void getLeaderboardGPGS() {
+    public void getLeaderboards()
+    {
+        if (agsClient != null) {
+            if (agsClient.getPlayerClient().isSignedIn())
+                agsClient.getLeaderboardsClient().showLeaderboardsOverlay();
+            else
+                agsClient.showSignInPage();
+        }
     }
 
-    public void getAchievementsGPGS() {
+    public void getAchievements()
+    {
+        if (agsClient != null) {
+            if (agsClient.getPlayerClient().isSignedIn())
+                agsClient.getAchievementsClient().showAchievementsOverlay();
+            else
+                agsClient.showSignInPage();
+        }
     }
 }

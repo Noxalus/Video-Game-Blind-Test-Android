@@ -2,9 +2,19 @@
 
 <resources>
     <string name="amazon_name_game_mode_achievement">name_game_mode</string>
+    <string name="amazon_game_game_mode_achievement">game_game_mode</string>
+    <string name="amazon_composer_game_mode_achievement">composer_game_mode</string>
+
     <string name="amazon_virtuoso_achievement">virtuoso</string>
+    <string name="amazon_conductor_achievement">conductor</string>
+    <string name="amazon_composer_achievement">composer</string>
+    <string name="amazon_pianist_achievement">pianist</string>
+    <string name="amazon_melomane_achievement">melomane</string>
+    <string name="amazon_music_lover_achievement">music_lover</string>
+    <string name="amazon_amateur_achievement">amateur</string>
+    <string name="amazon_better_than_nothing_achievement">better_than_nothing</string>
 
     <string name="amazon_name_leaderboard">name_leaderboard</string>
-    <string name="amazon_composer_leaderboard">composer_leaderboard</string>
     <string name="amazon_game_leaderboard">game_leaderboard</string>
+    <string name="amazon_composer_leaderboard">composer_leaderboard</string>
 </resources>

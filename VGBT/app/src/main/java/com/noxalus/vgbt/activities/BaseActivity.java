@@ -25,7 +25,6 @@ public class BaseActivity extends Activity
         public void onServiceReady(AmazonGamesClient amazonGamesClient) {
             agsClient = amazonGamesClient;
             Log.d("VGBT", "Ready to use Amazon GameCircle services!");
-            //ready to use GameCircle
         }
     };
 

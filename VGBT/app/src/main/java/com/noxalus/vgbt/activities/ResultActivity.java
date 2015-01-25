@@ -1,6 +1,5 @@
 package com.noxalus.vgbt.activities;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -58,23 +57,30 @@ public class ResultActivity extends BaseActivity
         int score = getIntent().getIntExtra("score", 0);
         String mode = getIntent().getStringExtra("mode");
 
-        /*
         if (score > 0)
-            unlockAchievementGPGS(getResources().getString(R.string.achievement_i_dont_suck_really___));
-        */
+            unlockAchievementGPGS(getResources().getString(R.string.amazon_better_than_nothing_achievement));
 
+        if (score >= 25)
+            unlockAchievementGPGS(getResources().getString(R.string.amazon_amateur_achievement));
+        if (score >= 50)
+            unlockAchievementGPGS(getResources().getString(R.string.amazon_music_lover_achievement));
+        if (score >= 100)
+            unlockAchievementGPGS(getResources().getString(R.string.amazon_melomane_achievement));
+        if (score >= 250)
+            unlockAchievementGPGS(getResources().getString(R.string.amazon_pianist_achievement));
+        if (score >= 500)
+            unlockAchievementGPGS(getResources().getString(R.string.amazon_composer_leaderboard));
+        if (score >= 750)
+            unlockAchievementGPGS(getResources().getString(R.string.amazon_conductor_achievement));
         if (score >= 1000)
             unlockAchievementGPGS(getResources().getString(R.string.amazon_virtuoso_achievement));
 
         if (mode.equals("nom"))
             unlockAchievementGPGS(getResources().getString(R.string.amazon_name_game_mode_achievement));
-
-        /*
         else if (mode.equals("jeu"))
-            unlockAchievementGPGS(getResources().getString(R.string.achievement_i_tried_to_guess_the_game));
+            unlockAchievementGPGS(getResources().getString(R.string.amazon_game_game_mode_achievement));
         else if (mode.equals("compositeur"))
-            unlockAchievementGPGS(getResources().getString(R.string.achievement_i_tried_to_guess_the_composer));
-        */
+            unlockAchievementGPGS(getResources().getString(R.string.amazon_composer_game_mode_achievement));
 
         final TextView scoreTextView = (TextView) findViewById(R.id.scoreTextView);
         scoreTextView.setText(Integer.toString(score));
@@ -132,13 +138,21 @@ public class ResultActivity extends BaseActivity
 
     public void submitScoreGPGS(int score, String leaderboardId)
     {
-        LeaderboardsClient lbClient = agsClient.getLeaderboardsClient();
-        AGResponseHandle<SubmitScoreResponse> handle = lbClient.submitScore(leaderboardId, score);
+        if (agsClient != null) {
+            if (agsClient.getPlayerClient().isSignedIn()) {
+                LeaderboardsClient lbClient = agsClient.getLeaderboardsClient();
+                AGResponseHandle<SubmitScoreResponse> handle = lbClient.submitScore(leaderboardId, score);
+            }
+        }
     }
 
     public void unlockAchievementGPGS(String achievementId)
     {
-        AchievementsClient acClient = agsClient.getAchievementsClient();
-        AGResponseHandle<UpdateProgressResponse> handle = acClient.updateProgress(achievementId, 100.0f);
+        if (agsClient != null) {
+            if (agsClient.getPlayerClient().isSignedIn()) {
+                AchievementsClient acClient = agsClient.getAchievementsClient();
+                AGResponseHandle<UpdateProgressResponse> handle = acClient.updateProgress(achievementId, 100.0f);
+            }
+        }
     }
 }
