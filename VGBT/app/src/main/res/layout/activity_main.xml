@@ -34,18 +34,11 @@
         android:text="Play"
         android:id="@+id/playButton"
         style="@style/ButtonStyle"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-    <!--
-        <Button
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="Achievements"
-            android:id="@+id/achievementsButton"
-            style="@style/ButtonStyle"
-            android:layout_above="@+id/leaderboardButton"
-            android:layout_margin="5dp" />
+        android:layout_above="@+id/leaderboardButton"
+        android:layout_alignLeft="@+id/leaderboardButton"
+        android:layout_alignStart="@+id/leaderboardButton" />
+
+
 
         <Button
             android:layout_width="fill_parent"
@@ -57,6 +50,15 @@
             android:layout_centerHorizontal="true"
             android:layout_margin="5dp" />
 
+    <!--
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Achievements"
+        android:id="@+id/achievementsButton"
+        style="@style/ButtonStyle"
+        android:layout_above="@+id/leaderboardButton"
+        android:layout_margin="5dp" />
 
         <Button
             android:layout_width="fill_parent"

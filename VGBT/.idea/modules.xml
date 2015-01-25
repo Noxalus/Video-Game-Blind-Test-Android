@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/VGBT.iml" filepath="$PROJECT_DIR$/VGBT.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/gameCircleSDK/gameCircleSDK.iml" filepath="$PROJECT_DIR$/gameCircleSDK/gameCircleSDK.iml" />
     </modules>
   </component>
 </project>

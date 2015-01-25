@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="gamecirclesdk">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/app/libs/gamecirclesdk.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

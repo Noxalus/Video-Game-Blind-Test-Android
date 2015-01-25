@@ -6,16 +6,23 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amazon.ags.api.AmazonGamesCallback;
+import com.amazon.ags.api.AmazonGamesClient;
+import com.amazon.ags.api.AmazonGamesFeature;
+import com.amazon.ags.api.AmazonGamesStatus;
 import com.noxalus.vgbt.R;
 
-public class MainActivity extends Activity {
+import java.util.EnumSet;
 
+public class MainActivity extends BaseActivity
+{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -52,17 +59,18 @@ public class MainActivity extends Activity {
         achievementsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
             }
         });
+        */
 
         final Button leaderBoardButton = (Button) findViewById(R.id.leaderboardButton);
         leaderBoardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                agsClient.getLeaderboardsClient().showLeaderboardOverlay("name_leaderboard");
             }
         });
-        */
     }
 
     private boolean isNetworkAvailable() {

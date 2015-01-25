@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <string name="amazon_name_leaderboard">name_leaderboard</string>
+    <string name="amazon_composer_leaderboard">composer_leaderboard</string>
+    <string name="amazon_game_leaderboard">game_leaderboard</string>
+</resources>

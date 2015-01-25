@@ -8,10 +8,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.amazon.ags.api.AGResponseHandle;
+import com.amazon.ags.api.AmazonGamesClient;
+import com.amazon.ags.api.leaderboards.LeaderboardsClient;
+import com.amazon.ags.api.leaderboards.SubmitScoreResponse;
 import com.noxalus.vgbt.R;
 
-public class ResultActivity extends Activity {
-
+public class ResultActivity extends BaseActivity
+{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,6 +34,9 @@ public class ResultActivity extends Activity {
     @Override
     public void onStart(){
         super.onStart();
+
+        if (agsClient == null)
+            AmazonGamesClient.initialize(this, callback, myGameFeatures);
 
         submitScore();
     }
@@ -86,7 +93,7 @@ public class ResultActivity extends Activity {
 
                 bestScoreTextView.setText("(Best: " + Integer.toString(bestScoreName) + ")");
 
-                //submitScoreGPGS(score, getResources().getString(R.string.leaderboard_guess_the_name));
+                submitScoreGPGS(score, getResources().getString(R.string.amazon_name_leaderboard));
 
                 break;
 
@@ -98,7 +105,7 @@ public class ResultActivity extends Activity {
 
                 bestScoreTextView.setText("(Best: " + Integer.toString(bestScoreGame) + ")");
 
-                //submitScoreGPGS(score, getResources().getString(R.string.leaderboard_guess_the_game));
+                submitScoreGPGS(score, getResources().getString(R.string.amazon_game_leaderboard));
 
                 break;
 
@@ -110,7 +117,7 @@ public class ResultActivity extends Activity {
 
                 bestScoreTextView.setText("(Best: " + Integer.toString(bestScoreComposer) + ")");
 
-                //submitScoreGPGS(score, getResources().getString(R.string.leaderboard_guess_the_composer));
+                submitScoreGPGS(score, getResources().getString(R.string.amazon_composer_leaderboard));
 
                 break;
         }
@@ -119,10 +126,9 @@ public class ResultActivity extends Activity {
     }
 
     public void submitScoreGPGS(int score, String leaderboardId) {
-        /*
-        if (isSignedIn())
-            Games.Leaderboards.submitScore(getApiClient(), leaderboardId, score);
-        */
+        // Replace YOUR_LEADERBOARD_ID with an actual leaderboard ID from your game.
+        LeaderboardsClient lbClient = agsClient.getLeaderboardsClient();
+        AGResponseHandle<SubmitScoreResponse> handle = lbClient.submitScore(leaderboardId, score);
     }
 
     public void unlockAchievementGPGS(String achievementId) {
