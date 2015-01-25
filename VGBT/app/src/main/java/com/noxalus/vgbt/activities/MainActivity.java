@@ -54,15 +54,13 @@ public class MainActivity extends BaseActivity
             }
         });
 
-        /*
         final Button achievementsButton = (Button) findViewById(R.id.achievementsButton);
         achievementsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                agsClient.getAchievementsClient().showAchievementsOverlay();
             }
         });
-        */
 
         final Button leaderBoardButton = (Button) findViewById(R.id.leaderboardButton);
         leaderBoardButton.setOnClickListener(new View.OnClickListener() {

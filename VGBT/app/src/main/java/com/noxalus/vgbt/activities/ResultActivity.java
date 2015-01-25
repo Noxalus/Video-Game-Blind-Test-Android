@@ -10,6 +10,8 @@ import android.widget.TextView;
 
 import com.amazon.ags.api.AGResponseHandle;
 import com.amazon.ags.api.AmazonGamesClient;
+import com.amazon.ags.api.achievements.AchievementsClient;
+import com.amazon.ags.api.achievements.UpdateProgressResponse;
 import com.amazon.ags.api.leaderboards.LeaderboardsClient;
 import com.amazon.ags.api.leaderboards.SubmitScoreResponse;
 import com.noxalus.vgbt.R;
@@ -59,12 +61,15 @@ public class ResultActivity extends BaseActivity
         /*
         if (score > 0)
             unlockAchievementGPGS(getResources().getString(R.string.achievement_i_dont_suck_really___));
+        */
 
         if (score >= 1000)
-            unlockAchievementGPGS(getResources().getString(R.string.achievement_virtuoso));
+            unlockAchievementGPGS(getResources().getString(R.string.amazon_virtuoso_achievement));
 
         if (mode.equals("nom"))
-            unlockAchievementGPGS(getResources().getString(R.string.achievement_i_tried_to_guess_the_name));
+            unlockAchievementGPGS(getResources().getString(R.string.amazon_name_game_mode_achievement));
+
+        /*
         else if (mode.equals("jeu"))
             unlockAchievementGPGS(getResources().getString(R.string.achievement_i_tried_to_guess_the_game));
         else if (mode.equals("compositeur"))
@@ -125,16 +130,15 @@ public class ResultActivity extends BaseActivity
         editor.commit();
     }
 
-    public void submitScoreGPGS(int score, String leaderboardId) {
-        // Replace YOUR_LEADERBOARD_ID with an actual leaderboard ID from your game.
+    public void submitScoreGPGS(int score, String leaderboardId)
+    {
         LeaderboardsClient lbClient = agsClient.getLeaderboardsClient();
         AGResponseHandle<SubmitScoreResponse> handle = lbClient.submitScore(leaderboardId, score);
     }
 
-    public void unlockAchievementGPGS(String achievementId) {
-        /*
-        if (isSignedIn())
-            Games.Achievements.unlock(getApiClient(), achievementId);
-        */
+    public void unlockAchievementGPGS(String achievementId)
+    {
+        AchievementsClient acClient = agsClient.getAchievementsClient();
+        AGResponseHandle<UpdateProgressResponse> handle = acClient.updateProgress(achievementId, 100.0f);
     }
 }
