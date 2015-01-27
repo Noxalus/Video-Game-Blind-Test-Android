@@ -18,16 +18,32 @@ import com.amazon.ags.api.AmazonGamesClient;
 import com.amazon.ags.api.AmazonGamesFeature;
 import com.amazon.ags.api.AmazonGamesStatus;
 import com.noxalus.vgbt.R;
+import com.noxalus.vgbt.entities.Question;
+import com.noxalus.vgbt.tasks.GetExtractNumberAsyncResponse;
+import com.noxalus.vgbt.tasks.GetExtractNumberAsyncTask;
+import com.noxalus.vgbt.tasks.GetQuizAsyncTask;
 
+import org.w3c.dom.Text;
+
+import java.util.ArrayList;
 import java.util.EnumSet;
 
-public class MainActivity extends BaseActivity
+public class MainActivity extends BaseActivity implements GetExtractNumberAsyncResponse
 {
+    TextView extractNumberTextView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        extractNumberTextView = (TextView) findViewById(R.id.extractNumberTextView);
+
+        if (isNetworkAvailable())
+        {
+           getExtractNumber();
+        }
 
         final Button playButton = (Button) findViewById(R.id.playButton);
         playButton.setOnClickListener(new View.OnClickListener() {
@@ -64,6 +80,23 @@ public class MainActivity extends BaseActivity
                 getLeaderboards();
             }
         });
+    }
+
+    private void getExtractNumber()
+    {
+        // AsyncTask can't be executed multiple times
+        // we need to create a new instance each time
+        GetExtractNumberAsyncTask getExtractNumberAsyncTask = new GetExtractNumberAsyncTask();
+        getExtractNumberAsyncTask.delegate = this;
+
+        getExtractNumberAsyncTask.execute(getResources().getString(R.string.api) + "?extractNumber=1");
+    }
+
+    @Override
+    public void processFinish(int output)
+    {
+        Log.d("VGBT", "COUCOUCOUCOUCOUCO: " + output);
+        extractNumberTextView.setText(output + " extracts");
     }
 
     private boolean isNetworkAvailable() {

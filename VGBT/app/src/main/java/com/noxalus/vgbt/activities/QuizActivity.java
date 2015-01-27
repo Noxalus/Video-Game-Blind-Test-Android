@@ -9,7 +9,6 @@ import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnBufferingUpdateListener;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Handler;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -27,10 +26,10 @@ import java.util.concurrent.TimeUnit;
 
 import com.noxalus.vgbt.R;
 import com.noxalus.vgbt.entities.Question;
-import com.noxalus.vgbt.tasks.AsyncResponse;
+import com.noxalus.vgbt.tasks.GetQuizAsyncResponse;
 import com.noxalus.vgbt.tasks.GetQuizAsyncTask;
 
-public class QuizActivity extends Activity implements OnClickListener, OnTouchListener, OnCompletionListener, OnBufferingUpdateListener, AsyncResponse {
+public class QuizActivity extends Activity implements OnClickListener, OnTouchListener, OnCompletionListener, OnBufferingUpdateListener, GetQuizAsyncResponse {
 
     private ImageButton buttonPlayPause;
     private SeekBar seekBarProgress;

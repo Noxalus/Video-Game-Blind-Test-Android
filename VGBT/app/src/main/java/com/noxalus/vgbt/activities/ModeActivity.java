@@ -22,7 +22,7 @@ public class ModeActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ModeActivity.this, QuizActivity.class);
-                intent.putExtra("mode", "nom");
+                intent.putExtra("mode", getResources().getString(R.string.name_game_mode));
                 startActivity(intent);
             }
         });
@@ -32,7 +32,7 @@ public class ModeActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ModeActivity.this, QuizActivity.class);
-                intent.putExtra("mode", "jeu");
+                intent.putExtra("mode", getResources().getString(R.string.game_game_mode));
                 startActivity(intent);
             }
         });
@@ -42,7 +42,7 @@ public class ModeActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ModeActivity.this, QuizActivity.class);
-                intent.putExtra("mode", "compositeur");
+                intent.putExtra("mode", getResources().getString(R.string.composer_game_mode));
                 startActivity(intent);
             }
         });

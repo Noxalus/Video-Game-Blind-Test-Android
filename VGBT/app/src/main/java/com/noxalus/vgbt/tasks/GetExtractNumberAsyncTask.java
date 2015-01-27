@@ -3,6 +3,8 @@ package com.noxalus.vgbt.tasks;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.noxalus.vgbt.entities.Question;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
@@ -17,20 +19,17 @@ import org.xml.sax.SAXParseException;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import com.noxalus.vgbt.entities.Question;
-
-public class GetQuizAsyncTask extends AsyncTask<String, String, ArrayList<Question>>
+public class GetExtractNumberAsyncTask extends AsyncTask<String, String, Integer>
 {
-    public GetQuizAsyncResponse delegate = null;
+    public GetExtractNumberAsyncResponse delegate = null;
 
     @Override
-    protected void onPostExecute(ArrayList<Question> result) {
+    protected void onPostExecute(Integer result) {
         super.onPostExecute(result);
         delegate.processFinish(result);
     }
@@ -41,7 +40,9 @@ public class GetQuizAsyncTask extends AsyncTask<String, String, ArrayList<Questi
     }
 
     @Override
-    protected ArrayList<Question> doInBackground(String... params) {
+    protected Integer doInBackground(String... params) {
+
+        Log.d("VGBT", "COUCOCUOCUOCUOCU: " + params[0]);
 
         HttpGet uri = new HttpGet(params[0]);
 
@@ -79,38 +80,13 @@ public class GetQuizAsyncTask extends AsyncTask<String, String, ArrayList<Questi
             });
             Document doc = builder.parse(is);
 
-            ArrayList<Question> questionObjectList = new ArrayList<>();
-            NodeList questions = doc.getElementsByTagName("question");
-            for (int i = 0; i < questions.getLength(); i++)
+            NodeList extractNumberNodes = doc.getElementsByTagName("extract_number");
+
+            if (extractNumberNodes.getLength() == 1)
             {
-                Question questionObject = new Question();
-
-                Element question = (Element)questions.item(i);
-
-                try {
-                    questionObject.setAnswerIndex(Short.parseShort(question.getAttribute("answer")));
-                    questionObject.setExtractId(Integer.parseInt(question.getAttribute("id")));
-                }
-                catch (Exception e)
-                {
-                    return null;
-                }
-
-                NodeList answers = question.getElementsByTagName("answer");
-
-                ArrayList<String> answersString = new ArrayList<String>();
-                for (int j = 0; j < answers.getLength(); j++)
-                {
-                    String currentAnswer = answers.item(j).getTextContent();
-                    answersString.add(currentAnswer);
-                }
-
-                questionObject.setAnswers(answersString);
-
-                questionObjectList.add(questionObject);
+                Element element = (Element)extractNumberNodes.item(0);
+                return Integer.parseInt(element.getTextContent());
             }
-
-            return questionObjectList;
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ParserConfigurationException e) {
@@ -119,6 +95,6 @@ public class GetQuizAsyncTask extends AsyncTask<String, String, ArrayList<Questi
             e.printStackTrace();
         }
 
-        return null;
+        return 0;
     }
 }

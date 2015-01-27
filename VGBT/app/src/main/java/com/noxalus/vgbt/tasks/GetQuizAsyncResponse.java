@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import com.noxalus.vgbt.entities.Question;
 
-public interface AsyncResponse
+public interface GetQuizAsyncResponse
 {
     void processFinish(ArrayList<Question> output);
 }
