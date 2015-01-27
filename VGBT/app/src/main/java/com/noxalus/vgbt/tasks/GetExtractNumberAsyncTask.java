@@ -42,8 +42,6 @@ public class GetExtractNumberAsyncTask extends AsyncTask<String, String, Integer
     @Override
     protected Integer doInBackground(String... params) {
 
-        Log.d("VGBT", "COUCOCUOCUOCUOCU: " + params[0]);
-
         HttpGet uri = new HttpGet(params[0]);
 
         DefaultHttpClient client = new DefaultHttpClient();

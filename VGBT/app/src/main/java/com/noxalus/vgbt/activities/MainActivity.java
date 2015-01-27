@@ -95,7 +95,6 @@ public class MainActivity extends BaseActivity implements GetExtractNumberAsyncR
     @Override
     public void processFinish(int output)
     {
-        Log.d("VGBT", "COUCOUCOUCOUCOUCO: " + output);
         extractNumberTextView.setText(output + " extracts");
     }
 

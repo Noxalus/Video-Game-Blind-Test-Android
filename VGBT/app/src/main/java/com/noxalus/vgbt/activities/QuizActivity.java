@@ -6,13 +6,10 @@ import android.content.res.Configuration;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.media.MediaPlayer;
-import android.media.MediaPlayer.OnBufferingUpdateListener;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Handler;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -29,12 +26,9 @@ import com.noxalus.vgbt.entities.Question;
 import com.noxalus.vgbt.tasks.GetQuizAsyncResponse;
 import com.noxalus.vgbt.tasks.GetQuizAsyncTask;
 
-public class QuizActivity extends Activity implements OnClickListener, OnTouchListener, OnCompletionListener, OnBufferingUpdateListener, GetQuizAsyncResponse {
+public class QuizActivity extends Activity implements OnClickListener, OnCompletionListener, GetQuizAsyncResponse {
 
     private ImageButton buttonPlayPause;
-    private SeekBar seekBarProgress;
-    public TextView musicNameTextView;
-    public TextView currentTimeTextView;
     public TextView scoreTextView;
     public ArrayList<ImageView> lifeIconImageViewList;
 
@@ -81,18 +75,14 @@ public class QuizActivity extends Activity implements OnClickListener, OnTouchLi
     }
 
     @Override
-    public void onStart()
+    public void onResume()
     {
-        super.onStart();
-    }
+        super.onResume();
 
-    @Override
-    public void onStop()
-    {
-        super.onStop();
-
-        mediaPlayer.release();
-        mediaPlayerIsReleased = true;
+        if (!mediaPlayer.isPlaying()) {
+            mediaPlayer.start();
+            buttonPlayPause.setImageResource(R.drawable.button_pause);
+        }
     }
 
     @Override
@@ -100,10 +90,9 @@ public class QuizActivity extends Activity implements OnClickListener, OnTouchLi
     {
         super.onPause();
 
-        if (!mediaPlayerIsReleased && mediaPlayer.isPlaying())
-            mediaPlayer.stop();
+        if (!mediaPlayerIsReleased)
+            mediaPlayer.pause();
     }
-
 
     private void updateAnswers()
     {
@@ -140,9 +129,6 @@ public class QuizActivity extends Activity implements OnClickListener, OnTouchLi
 
         buttonPlayPause = (ImageButton)findViewById(R.id.imageButton);
         buttonPlayPause.setOnClickListener(this);
-
-        //musicNameTextView = (TextView)findViewById(R.id.musicName);
-        //currentTimeTextView = (TextView)findViewById(R.id.currentTime);
 
         scoreTextView = (TextView)findViewById(R.id.scoreTextView);
 
@@ -187,15 +173,8 @@ public class QuizActivity extends Activity implements OnClickListener, OnTouchLi
             answerButtonMap.get(i).setOnClickListener(buttonClickListener);
         }
 
-        /*
-        seekBarProgress = (SeekBar)findViewById(R.id.SeekBarTestPlay);
-        seekBarProgress.setMax(99); // It means 100% .0-99
-        seekBarProgress.setOnTouchListener(this);
-        */
-
         mediaPlayer = new MediaPlayer();
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        mediaPlayer.setOnBufferingUpdateListener(this);
         mediaPlayer.setOnCompletionListener(this);
 
         mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
@@ -215,18 +194,10 @@ public class QuizActivity extends Activity implements OnClickListener, OnTouchLi
 
         String time = convertMillisecondToTime(mediaFileLengthInMilliseconds);
 
-        /*
-        if (mediaFileLengthInMilliseconds > 0)
-            mediaPlayer.seekTo(mediaFileLengthInMilliseconds - 100000);
-        */
-
         mediaPlayer.start();
         buttonPlayPause.setImageResource(R.drawable.button_pause);
 
         startTime = System.currentTimeMillis();
-
-        //musicNameTextView.setText("extrait" + questions.get(currentQuestionId).getExtractId() + ".mp3 (" + time + ")");
-        //primarySeekBarProgressUpdater();
     }
 
     private void nextQuestion()
@@ -254,25 +225,6 @@ public class QuizActivity extends Activity implements OnClickListener, OnTouchLi
         }
     }
 
-    private void primarySeekBarProgressUpdater() {
-        int progress = (int)(((float)mediaPlayer.getCurrentPosition() / mediaFileLengthInMilliseconds) * 100);
-        onProgressChanged(seekBarProgress, progress, false);
-
-        String currentPositionText = convertMillisecondToTime(mediaPlayer.getCurrentPosition());
-
-        currentTimeTextView.setText(currentPositionText);
-
-        if (mediaPlayer.isPlaying()) {
-            Runnable notification = new Runnable() {
-                public void run() {
-                    primarySeekBarProgressUpdater();
-                }
-            };
-
-            handler.postDelayed(notification,1000);
-        }
-    }
-
     @Override
     public void onClick(View v) {
         if(v.getId() == R.id.imageButton){
@@ -285,33 +237,12 @@ public class QuizActivity extends Activity implements OnClickListener, OnTouchLi
                 mediaPlayer.pause();
                 buttonPlayPause.setImageResource(R.drawable.button_play);
             }
-
-            //primarySeekBarProgressUpdater();
         }
-    }
-
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        /*
-        if(v.getId() == R.id.SeekBarTestPlay){
-            if(mediaPlayer.isPlaying()) {
-                SeekBar sb = (SeekBar)v;
-                int playPositionInMilliseconds = (mediaFileLengthInMilliseconds / 100) * sb.getProgress();
-                mediaPlayer.seekTo(playPositionInMilliseconds);
-            }
-        }
-        */
-        return false;
     }
 
     @Override
     public void onCompletion(MediaPlayer mp) {
         buttonPlayPause.setImageResource(R.drawable.button_play);
-    }
-
-    @Override
-    public void onBufferingUpdate(MediaPlayer mp, int percent) {
-        //seekBarProgress.setSecondaryProgress(percent);
     }
 
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
