@@ -1,22 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.noxalus.vgbt">
+    package="com.noxalus.vgbt" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
-        tools:replace="android:label"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme">
-
+        android:theme="@style/AppTheme"
+        tools:replace="android:label" >
         <activity
             android:name=".activities.MainActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -25,22 +24,27 @@
         </activity>
         <activity
             android:name=".activities.QuizActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/title_activity_quiz" >
+            android:label="@string/title_activity_quiz"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".activities.ProposalActivity"
-            android:label="@string/title_activity_proposal">
+            android:name=".activities.FeedbackActivity"
+            android:label="@string/title_activity_feedback" >
         </activity>
         <activity
             android:name=".activities.ModeActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/title_activity_mode">
+            android:label="@string/title_activity_mode"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".activities.ResultActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/title_activity_result" >
+            android:label="@string/title_activity_result"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".activities.GameSeriesActivity"
+            android:label="@string/title_activity_game_series"
+            android:screenOrientation="portrait" >
         </activity>
     </application>
 

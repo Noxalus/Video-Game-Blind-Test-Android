@@ -80,6 +80,15 @@ public class MainActivity extends BaseActivity implements GetExtractNumberAsyncR
                 getLeaderboards();
             }
         });
+
+        final Button optionsButton = (Button) findViewById(R.id.optionsButton);
+        optionsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, GameSeriesActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private void getExtractNumber()

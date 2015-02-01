@@ -8,12 +8,12 @@ import android.widget.EditText;
 
 import com.noxalus.vgbt.R;
 
-public class ProposalActivity extends Activity {
+public class FeedbackActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_proposal);
+        setContentView(R.layout.activity_feedback);
 
         final EditText proposalsEditText = (EditText) findViewById(R.id.proposalsEditText);
 

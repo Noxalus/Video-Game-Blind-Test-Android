@@ -2,6 +2,7 @@ package com.noxalus.vgbt.activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.media.AudioManager;
 import android.os.Bundle;
@@ -19,9 +20,11 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import com.noxalus.vgbt.R;
+import com.noxalus.vgbt.entities.GameSerie;
 import com.noxalus.vgbt.entities.Question;
 import com.noxalus.vgbt.tasks.GetQuizAsyncResponse;
 import com.noxalus.vgbt.tasks.GetQuizAsyncTask;
@@ -102,6 +105,28 @@ public class QuizActivity extends Activity implements OnClickListener, OnComplet
         }
     }
 
+    private String getExcludeGameSeries()
+    {
+        SharedPreferences settings = getSharedPreferences("VGBT", 0);
+
+        Set<String> savedExcludeGameSeries = settings.getStringSet("excludeGameSeries", null);
+
+        String excludeGameSeries = "";
+        boolean firstElement = true;
+        if (savedExcludeGameSeries != null) {
+            for (String excludeGameSerie : savedExcludeGameSeries) {
+                if (firstElement) {
+                    excludeGameSeries += excludeGameSerie;
+                    firstElement = false;
+                }
+                else
+                    excludeGameSeries += "," + excludeGameSerie;
+            }
+        }
+
+        return excludeGameSeries;
+    }
+
     private void getQuiz()
     {
         // AsyncTask can't be executed multiple times
@@ -109,7 +134,12 @@ public class QuizActivity extends Activity implements OnClickListener, OnComplet
         GetQuizAsyncTask getQuizAsyncTask = new GetQuizAsyncTask();
         getQuizAsyncTask.delegate = this;
 
-        getQuizAsyncTask.execute(getResources().getString(R.string.api) + "?type=" + mode + "&questionNumber=" + getResources().getInteger(R.integer.number_of_question_to_ask));
+        String excludeGameSeries = getExcludeGameSeries();
+
+        if (excludeGameSeries.length() > 0)
+            excludeGameSeries = "&excludeGameSeries=" + excludeGameSeries;
+
+        getQuizAsyncTask.execute(getResources().getString(R.string.api) + "?type=" + mode + excludeGameSeries + "&questionNumber=" + getResources().getInteger(R.integer.number_of_question_to_ask));
     }
 
     @Override

@@ -1,0 +1,7 @@
+<resources>
+
+    <style name="FullscreenTheme" parent="android:Theme.Holo">
+        <item name="android:windowBackground">@null</item>
+    </style>
+
+</resources>

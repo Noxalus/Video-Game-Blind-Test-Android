@@ -67,7 +67,7 @@ ADDED from AndroidManifest.xml:26:9
 		ADDED from AndroidManifest.xml:29:13
 	android:name
 		ADDED from AndroidManifest.xml:27:13
-activity#com.noxalus.vgbt.activities.ProposalActivity
+activity#com.noxalus.vgbt.activities.FeedbackActivity
 ADDED from AndroidManifest.xml:31:9
 	android:label
 		ADDED from AndroidManifest.xml:33:13

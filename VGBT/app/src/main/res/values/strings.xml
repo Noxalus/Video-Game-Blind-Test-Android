@@ -6,10 +6,11 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_quiz">QuizActivity</string>
     <string name="api">http://api.final-rpg.com/new/api/</string>
-    <string name="title_activity_proposal">ProposalActivity</string>
+    <string name="title_activity_feedback">FeedbackActivity</string>
     <string name="not_connected">It seems that you are not connected to internet :\'(\n\n Sorry, but you need to be connected to play, please check your connection.</string>
     <string name="title_activity_mode">ModeActivity</string>
     <string name="title_activity_result">ResultActivity</string>
+    <string name="title_activity_game_series">GameSeriesActivity</string>
 
     <string name="name_game_mode">name</string>
     <string name="game_game_mode">game</string>
@@ -19,5 +20,8 @@
     <integer name="max_point_for_extract">5</integer>
     <integer name="max_seconds_to_answer">10</integer>
     <integer name="number_of_question_to_ask">30</integer>
+
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="Save">Save</string>
 
 </resources>
