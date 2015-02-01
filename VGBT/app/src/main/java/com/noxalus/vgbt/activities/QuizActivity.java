@@ -127,6 +127,28 @@ public class QuizActivity extends Activity implements OnClickListener, OnComplet
         return excludeGameSeries;
     }
 
+    private String getExcludeGames()
+    {
+        SharedPreferences settings = getSharedPreferences("VGBT", 0);
+
+        Set<String> savedExcludeGames = settings.getStringSet("excludeGames", null);
+
+        String excludeGames = "";
+        boolean firstElement = true;
+        if (savedExcludeGames != null) {
+            for (String excludeGame : savedExcludeGames) {
+                if (firstElement) {
+                    excludeGames += excludeGame;
+                    firstElement = false;
+                }
+                else
+                    excludeGames += "," + excludeGame;
+            }
+        }
+
+        return excludeGames;
+    }
+
     private void getQuiz()
     {
         // AsyncTask can't be executed multiple times
@@ -135,11 +157,14 @@ public class QuizActivity extends Activity implements OnClickListener, OnComplet
         getQuizAsyncTask.delegate = this;
 
         String excludeGameSeries = getExcludeGameSeries();
-
         if (excludeGameSeries.length() > 0)
             excludeGameSeries = "&excludeGameSeries=" + excludeGameSeries;
 
-        getQuizAsyncTask.execute(getResources().getString(R.string.api) + "?type=" + mode + excludeGameSeries + "&questionNumber=" + getResources().getInteger(R.integer.number_of_question_to_ask));
+        String excludeGames = getExcludeGames();
+        if (excludeGames.length() > 0)
+            excludeGames = "&excludeGames=" + excludeGames;
+
+        getQuizAsyncTask.execute(getResources().getString(R.string.api) + "?type=" + mode + excludeGameSeries + excludeGames + "&questionNumber=" + getResources().getInteger(R.integer.number_of_question_to_ask));
     }
 
     @Override

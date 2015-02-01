@@ -2,6 +2,7 @@ package com.noxalus.vgbt.activities;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -37,14 +38,6 @@ public class GameSeriesActivity extends Activity implements GetGameSeriesAsyncRe
         setContentView(R.layout.activity_game_series);
 
         gameSeries = new ArrayList<>();
-
-        final Button saveButton = (Button) findViewById(R.id.gameSerieSaveButton);
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                saveExcludeGameSeries();
-            }
-        });
 
         getGameSeries();
     }
@@ -116,18 +109,17 @@ public class GameSeriesActivity extends Activity implements GetGameSeriesAsyncRe
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                // When clicked, show a toast with the TextView text
                 GameSerie gameSerie = (GameSerie) parent.getItemAtPosition(position);
-                Toast.makeText(getApplicationContext(),
-                        "Clicked on Row: " + gameSerie.getName(),
-                        Toast.LENGTH_LONG).show();
+
+                Intent intent = new Intent(GameSeriesActivity.this, ExcludeGamesActivity.class);
+                intent.putExtra("gameSerieId", gameSerie.getId());
+                startActivity(intent);
             }
         });
 
     }
 
-    private class MyCustomAdapter extends ArrayAdapter<GameSerie> {
-
+    public class MyCustomAdapter extends ArrayAdapter<GameSerie> {
         private ArrayList<GameSerie> gameSerieList;
 
         public MyCustomAdapter(Context context, int textViewResourceId,
@@ -162,11 +154,10 @@ public class GameSeriesActivity extends Activity implements GetGameSeriesAsyncRe
                     public void onClick(View v) {
                         CheckBox cb = (CheckBox) v ;
                         GameSerie gameSerie = (GameSerie) cb.getTag();
-                        Toast.makeText(getApplicationContext(),
-                                "Clicked on Checkbox: " + cb.getText() +
-                                        " is " + cb.isChecked(),
-                                Toast.LENGTH_LONG).show();
+
                         gameSerie.setSelected(cb.isChecked());
+
+                        ((GameSeriesActivity) getContext()).saveExcludeGameSeries();
                     }
                 });
             }
@@ -182,33 +173,5 @@ public class GameSeriesActivity extends Activity implements GetGameSeriesAsyncRe
 
             return convertView;
         }
-
     }
-
-    /*
-    private void checkButtonClick()
-    {
-        Button myButton = (Button) findViewById(R.id.gameSerieSaveButton);
-        myButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v) {
-
-                StringBuffer responseText = new StringBuffer();
-                responseText.append("The following were selected...\n");
-
-                ArrayList<GameSerie> gameSerieList = dataAdapter.gameSerieList;
-                for(int i=0;i<gameSerieList.size();i++){
-                    GameSerie gameSerie = gameSerieList.get(i);
-                    if(gameSerie.isSelected()){
-                        responseText.append("\n" + gameSerie.getName());
-                    }
-                }
-
-                Toast.makeText(getApplicationContext(),
-                        responseText, Toast.LENGTH_LONG).show();
-            }
-        });
-    }
-    */
 }
