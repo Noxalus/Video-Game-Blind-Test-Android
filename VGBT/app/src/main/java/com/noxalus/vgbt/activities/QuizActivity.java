@@ -83,8 +83,8 @@ public class QuizActivity extends Activity implements OnClickListener, OnComplet
         super.onResume();
 
         if (!mediaPlayer.isPlaying()) {
-            mediaPlayer.start();
-            buttonPlayPause.setImageResource(R.drawable.button_pause);
+            waitToPlayMusic = false;
+            playMusic();
         }
     }
 
@@ -92,6 +92,8 @@ public class QuizActivity extends Activity implements OnClickListener, OnComplet
     public void onPause()
     {
         super.onPause();
+
+        waitToPlayMusic = true;
 
         if (!mediaPlayerIsReleased)
             mediaPlayer.pause();
@@ -245,10 +247,6 @@ public class QuizActivity extends Activity implements OnClickListener, OnComplet
 
     private void playMusic()
     {
-        mediaFileLengthInMilliseconds = mediaPlayer.getDuration();
-
-        String time = convertMillisecondToTime(mediaFileLengthInMilliseconds);
-
         mediaPlayer.start();
         buttonPlayPause.setImageResource(R.drawable.button_pause);
 
@@ -270,7 +268,7 @@ public class QuizActivity extends Activity implements OnClickListener, OnComplet
     private void loadMusic()
     {
         try {
-            String currentMusicUrl = getResources().getString(R.string.api)  + "/mp3.php?id=" + questions.get(currentQuestionId).getExtractId() + "&time=" + getResources().getInteger(R.integer.second_to_stream);
+            String currentMusicUrl = getResources().getString(R.string.api)  + "mp3.php?id=" + questions.get(currentQuestionId).getExtractId() + "&time=" + getResources().getInteger(R.integer.second_to_stream);
             mediaPlayer.setDataSource(currentMusicUrl);
             mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mediaPlayer.prepareAsync();
