@@ -12,7 +12,8 @@
         android:layout_alignParentLeft="true"
         android:focusable="false"
         android:focusableInTouchMode="false"
-        android:text="CheckBox" />
+        android:text="CheckBox"
+        android:clickable="false" />
 
     <TextView
         android:id="@+id/code"

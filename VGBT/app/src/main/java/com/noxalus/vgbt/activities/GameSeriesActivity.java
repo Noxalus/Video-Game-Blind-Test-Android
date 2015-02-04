@@ -49,12 +49,14 @@ public class GameSeriesActivity extends Activity implements GetGameSeriesAsyncRe
         GetGameSeriesAsyncTask getGameSeriesAsyncTask = new GetGameSeriesAsyncTask();
         getGameSeriesAsyncTask.delegate = this;
 
-        getGameSeriesAsyncTask.execute(getResources().getString(R.string.api) + "?gameSerie=0");
+        getGameSeriesAsyncTask.execute(getResources().getString(R.string.api) + "?gameSerie=-42");
     }
 
     @Override
     public void processFinish(ArrayList<GameSerie> output) {
         gameSeries = output;
+        GameSerie noGameSerie = new GameSerie(0, "Others");
+        gameSeries.add(noGameSerie);
 
         getExcludeGameSeries();
         displayListView();
