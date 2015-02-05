@@ -3,9 +3,15 @@ package com.noxalus.vgbt.activities;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.text.Html;
+import android.text.SpannableString;
+import android.text.style.StyleSpan;
+import android.text.style.UnderlineSpan;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -104,10 +110,23 @@ public class MainActivity extends BaseActivity implements GetExtractNumberAsyncR
     @Override
     public void processFinish(int output)
     {
-        extractNumberTextView.setText(output + " extracts");
+        SharedPreferences settings = getSharedPreferences("VGBT", 0);
+        SharedPreferences.Editor editor = settings.edit();
+
+        int extractNumber = settings.getInt("extractNumber", 0);
+
+        if (extractNumber > 0 && extractNumber < output) {
+            extractNumberTextView.setText(Html.fromHtml(output + " extracts\n(<b>" + (output - extractNumber) + " new</b>)"));
+        }
+        else
+            extractNumberTextView.setText(output + " extracts");
+
+        editor.putInt("extractNumber", output);
+        editor.commit();
     }
 
-    private boolean isNetworkAvailable() {
+    private boolean isNetworkAvailable()
+    {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();

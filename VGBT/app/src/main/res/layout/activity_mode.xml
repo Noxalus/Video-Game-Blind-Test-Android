@@ -20,7 +20,7 @@
     <Button
         android:layout_width="fill_parent"
         android:layout_height="80dp"
-        android:text="Name"
+        android:text="Title"
         android:id="@+id/nameButton"
         android:layout_below="@+id/modeInfoTextView"
         android:layout_alignParentRight="true"
