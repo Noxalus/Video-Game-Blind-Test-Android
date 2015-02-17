@@ -1,18 +1,27 @@
 package com.noxalus.vgbt.entities;
 
+import java.util.ArrayList;
+
 public class Game extends SelectableEntity
 {
-    private Integer gameId;
+    private Integer gameSerieId;
+    private ArrayList<Title> titles;
 
-    public Game(Integer id, String name, int gameId)
+    public Game(Integer id, String name, int gameSerieId)
     {
         super(id, name);
 
-        this.gameId = gameId;
+        this.gameSerieId = gameSerieId;
+        this.titles = new ArrayList<Title>();
     }
 
-    public Integer getGameId()
+    public void addTitle(Title title)
     {
-        return gameId;
+        titles.add(title);
+    }
+
+    public Integer getGameSerieId()
+    {
+        return gameSerieId;
     }
 }

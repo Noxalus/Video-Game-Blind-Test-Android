@@ -116,7 +116,7 @@ public class MainActivity extends BaseActivity implements GetExtractNumberAsyncR
         int extractNumber = settings.getInt("extractNumber", 0);
 
         if (extractNumber > 0 && extractNumber < output) {
-            extractNumberTextView.setText(Html.fromHtml(output + " extracts\n(<b>" + (output - extractNumber) + " new</b>)"));
+            extractNumberTextView.setText(Html.fromHtml(output + " extracts<br>(<b>" + (output - extractNumber) + " new</b>)"));
         }
         else
             extractNumberTextView.setText(output + " extracts");

@@ -3,7 +3,9 @@ package com.noxalus.vgbt.tasks;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.noxalus.vgbt.entities.Game;
 import com.noxalus.vgbt.entities.GameSerie;
+import com.noxalus.vgbt.entities.Title;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -90,9 +92,43 @@ public class GetGameSeriesAsyncTask extends AsyncTask<String, String, ArrayList<
                     Element gameSerie = (Element) gameSerieNodes.item(i);
 
                     int gameSerieId = Integer.parseInt(gameSerie.getAttribute("id"));
-                    String gameSerieName = gameSerie.getTextContent();
+                    String gameSerieName = gameSerie.getAttribute("name");
 
                     GameSerie gameSerieObject = new GameSerie(gameSerieId, gameSerieName);
+
+                    // Get the list of games
+                    NodeList gameNodes = ((Element) gameSerieNodes.item(i)).getElementsByTagName("game");
+
+                    if (gameNodes.getLength() > 0) {
+                        for (int j = 0; j < gameNodes.getLength(); j++) {
+
+                            Element game = (Element) gameNodes.item(j);
+
+                            int gameId = Integer.parseInt(game.getAttribute("id"));
+                            String gameName = game.getAttribute("name");
+
+                            Game gameObject = new Game(gameId, gameName, gameSerieId);
+
+                            // Get the list of extracts
+                            NodeList extractNodes = ((Element) gameNodes.item(j)).getElementsByTagName("extract");
+
+                            if (extractNodes.getLength() > 0) {
+                                for (int k = 0; k < extractNodes.getLength(); k++) {
+
+                                    Element extract = (Element) extractNodes.item(k);
+
+                                    int extractId = Integer.parseInt(extract.getAttribute("id"));
+                                    String extractName = extract.getTextContent();
+
+                                    Title extractObject = new Title(extractId, extractName, gameId);
+
+                                    gameObject.addTitle(extractObject);
+                                }
+                            }
+
+                            gameSerieObject.addGame(gameObject);
+                        }
+                    }
 
                     gameSerieObjectList.add(gameSerieObject);
                 }

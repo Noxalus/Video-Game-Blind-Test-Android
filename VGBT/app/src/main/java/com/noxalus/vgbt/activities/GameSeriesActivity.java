@@ -55,9 +55,6 @@ public class GameSeriesActivity extends Activity implements GetGameSeriesAsyncRe
     @Override
     public void processFinish(ArrayList<GameSerie> output) {
         gameSeries = output;
-        GameSerie noGameSerie = new GameSerie(0, "Others");
-        gameSeries.add(noGameSerie);
-
         getExcludeGameSeries();
         displayListView();
     }
@@ -168,7 +165,7 @@ public class GameSeriesActivity extends Activity implements GetGameSeriesAsyncRe
             }
 
             GameSerie gameSerie = gameSerieList.get(position);
-            holder.code.setText(" (" +  gameSerie.getId() + ")");
+            holder.code.setText(" (" +  gameSerie.gameNumber() + ")");
             holder.name.setText(gameSerie.getName());
             holder.name.setChecked(gameSerie.isSelected());
             holder.name.setTag(gameSerie);
