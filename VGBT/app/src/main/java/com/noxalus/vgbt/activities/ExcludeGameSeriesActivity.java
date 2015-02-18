@@ -5,20 +5,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.noxalus.vgbt.R;
+import com.noxalus.vgbt.config.Config;
 import com.noxalus.vgbt.entities.GameSerie;
+import com.noxalus.vgbt.entities.GameSeries;
 import com.noxalus.vgbt.tasks.GetGameSeriesAsyncResponse;
 import com.noxalus.vgbt.tasks.GetGameSeriesAsyncTask;
 
@@ -26,20 +27,28 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-public class GameSeriesActivity extends Activity implements GetGameSeriesAsyncResponse
+public class ExcludeGameSeriesActivity extends Activity implements GetGameSeriesAsyncResponse
 {
     MyCustomAdapter dataAdapter = null;
     public GetGameSeriesAsyncResponse delegate = null;
-    ArrayList<GameSerie> gameSeries;
+    GameSeries gameSeries;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_game_series);
+        setContentView(R.layout.activity_exclude_game_series);
 
-        gameSeries = new ArrayList<>();
+        SharedPreferences settings = getSharedPreferences("VGBT", 0);
 
-        getGameSeries();
+        boolean newExtracts = settings.getBoolean("newExtracts", true);
+
+        if (newExtracts)
+            getGameSeries();
+        else {
+            Config.getInstance().loadGameSeries(getApplicationContext());
+            gameSeries = Config.getInstance().getGameSeries();
+            displayListView();
+        }
     }
 
     private void getGameSeries()
@@ -50,13 +59,6 @@ public class GameSeriesActivity extends Activity implements GetGameSeriesAsyncRe
         getGameSeriesAsyncTask.delegate = this;
 
         getGameSeriesAsyncTask.execute(getResources().getString(R.string.api) + "?gameSerie=-42");
-    }
-
-    @Override
-    public void processFinish(ArrayList<GameSerie> output) {
-        gameSeries = output;
-        getExcludeGameSeries();
-        displayListView();
     }
 
     private void getExcludeGameSeries()
@@ -79,6 +81,17 @@ public class GameSeriesActivity extends Activity implements GetGameSeriesAsyncRe
         }
     }
 
+    @Override
+    public void processFinish(GameSeries output) {
+        gameSeries = output;
+
+        Config.getInstance().setGameSeries(gameSeries);
+        Config.getInstance().saveGameSeries(getApplicationContext());
+
+        getExcludeGameSeries();
+        displayListView();
+    }
+
     private void saveExcludeGameSeries()
     {
         SharedPreferences settings = getSharedPreferences("VGBT", 0);
@@ -99,7 +112,7 @@ public class GameSeriesActivity extends Activity implements GetGameSeriesAsyncRe
     private void displayListView()
     {
         // Create an ArrayAdaptar from the String Array
-        dataAdapter = new MyCustomAdapter(this, R.layout.game_serie_info, gameSeries);
+        dataAdapter = new MyCustomAdapter(this, R.layout.checkbox_item, gameSeries);
         ListView listView = (ListView) findViewById(R.id.gameSerieExpandableListView);
 
         // Assign adapter to ListView
@@ -110,7 +123,7 @@ public class GameSeriesActivity extends Activity implements GetGameSeriesAsyncRe
                                     int position, long id) {
                 GameSerie gameSerie = (GameSerie) parent.getItemAtPosition(position);
 
-                Intent intent = new Intent(GameSeriesActivity.this, ExcludeGamesActivity.class);
+                Intent intent = new Intent(ExcludeGameSeriesActivity.this, ExcludeGamesActivity.class);
                 intent.putExtra("gameSerieId", gameSerie.getId());
                 startActivity(intent);
             }
@@ -137,12 +150,11 @@ public class GameSeriesActivity extends Activity implements GetGameSeriesAsyncRe
         public View getView(int position, View convertView, ViewGroup parent)
         {
             ViewHolder holder = null;
-            Log.v("ConvertView", String.valueOf(position));
 
             if (convertView == null) {
                 LayoutInflater vi = (LayoutInflater)getSystemService(
                         Context.LAYOUT_INFLATER_SERVICE);
-                convertView = vi.inflate(R.layout.game_serie_info, null);
+                convertView = vi.inflate(R.layout.checkbox_item, null);
 
                 holder = new ViewHolder();
                 holder.code = (TextView) convertView.findViewById(R.id.code);
@@ -156,7 +168,7 @@ public class GameSeriesActivity extends Activity implements GetGameSeriesAsyncRe
 
                         gameSerie.setSelected(cb.isChecked());
 
-                        ((GameSeriesActivity) getContext()).saveExcludeGameSeries();
+                        ((ExcludeGameSeriesActivity) getContext()).saveExcludeGameSeries();
                     }
                 });
             }
@@ -165,8 +177,8 @@ public class GameSeriesActivity extends Activity implements GetGameSeriesAsyncRe
             }
 
             GameSerie gameSerie = gameSerieList.get(position);
-            holder.code.setText(" (" +  gameSerie.gameNumber() + ")");
-            holder.name.setText(gameSerie.getName());
+            holder.code.setText("");
+            holder.name.setText(Html.fromHtml(gameSerie.getName() + " (<i>" + gameSerie.getGames().size() + "</i>)"));
             holder.name.setChecked(gameSerie.isSelected());
             holder.name.setTag(gameSerie);
 

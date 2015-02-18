@@ -12,6 +12,7 @@
     <string name="title_activity_result">ResultActivity</string>
     <string name="title_activity_game_series">GameSeriesActivity</string>
     <string name="title_activity_exclude_games">ExcludeGamesActivity</string>
+    <string name="title_activity_exclude_titles">ExcludeTitlesActivity</string>
 
     <string name="name_game_mode">name</string>
     <string name="game_game_mode">game</string>

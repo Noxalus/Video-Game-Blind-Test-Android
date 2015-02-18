@@ -2,7 +2,6 @@ package com.noxalus.vgbt.activities;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Html;
@@ -10,7 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ListView;
@@ -19,32 +17,33 @@ import android.widget.TextView;
 import com.noxalus.vgbt.R;
 import com.noxalus.vgbt.config.Config;
 import com.noxalus.vgbt.entities.Game;
-import com.noxalus.vgbt.entities.GameSerie;
+import com.noxalus.vgbt.entities.Title;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-public class ExcludeGamesActivity extends Activity
+public class ExcludeTitlesActivity extends Activity
 {
     MyCustomAdapter dataAdapter = null;
-    ArrayList<Game> games;
-    Integer gameSerieId;
+    ArrayList<Title> titles;
+    Integer gameId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_exclude_games);
+        setContentView(R.layout.activity_exclude_titles);
 
-        gameSerieId = getIntent().getIntExtra("gameSerieId", 0);
+        gameId = getIntent().getIntExtra("gameId", 0);
 
-        games = Config.getInstance().getGameSeries().getGameSerie(gameSerieId).getGames();
+        titles = Config.getInstance().getTitlesFromGameId(gameId);
 
         displayListView();
     }
 
-    private void getExcludeGames()
+    private void getExcludeTitles()
     {
+        /*
         SharedPreferences settings = getSharedPreferences("VGBT", 0);
 
         Set<String> excludeGamesSet = settings.getStringSet("excludeGames", null);
@@ -68,10 +67,12 @@ public class ExcludeGamesActivity extends Activity
                 game.setSelected(false);
             }
         }
+        */
     }
 
-    private void saveExcludeGames()
+    private void saveExcludeTitles()
     {
+        /*
         SharedPreferences settings = getSharedPreferences("VGBT", 0);
         SharedPreferences.Editor editor = settings.edit();
 
@@ -94,18 +95,18 @@ public class ExcludeGamesActivity extends Activity
 
         editor.putStringSet("excludeGames", excludeGames);
         editor.commit();
+        */
     }
 
-    private boolean isGameSerieExclude()
+    private boolean isTitleExclude()
     {
         SharedPreferences settings = getSharedPreferences("VGBT", 0);
 
-        Set<String> excludeGameSeriesSet = settings.getStringSet("excludeGameSeries", null);
-        ArrayList<Integer> savedExcludeGameSeries = new ArrayList<Integer>();
+        Set<String> excludeTitleSet = settings.getStringSet("excludeTitles", null);
 
-        if (excludeGameSeriesSet != null) {
-            for (String excludeGameSerie : excludeGameSeriesSet) {
-                if (this.gameSerieId == Integer.parseInt(excludeGameSerie))
+        if (excludeTitleSet != null) {
+            for (String excludeTitle : excludeTitleSet) {
+                if (this.gameId == Integer.parseInt(excludeTitle))
                     return true;
             }
         }
@@ -116,33 +117,21 @@ public class ExcludeGamesActivity extends Activity
     private void displayListView()
     {
         // Create an ArrayAdaptar from the String Array
-        dataAdapter = new MyCustomAdapter(this, R.layout.checkbox_item, games);
-        ListView listView = (ListView) findViewById(R.id.gamesListView);
+        dataAdapter = new MyCustomAdapter(this, R.layout.checkbox_item, titles);
+        ListView listView = (ListView) findViewById(R.id.titleListView);
 
         // Assign adapter to ListView
         listView.setAdapter(dataAdapter);
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
-                Game game = (Game) parent.getItemAtPosition(position);
-
-                Intent intent = new Intent(ExcludeGamesActivity.this, ExcludeTitlesActivity.class);
-                intent.putExtra("gameId", game.getId());
-                startActivity(intent);
-            }
-        });
     }
 
-    private class MyCustomAdapter extends ArrayAdapter<Game> {
+    private class MyCustomAdapter extends ArrayAdapter<Title> {
 
-        private ArrayList<Game> gameList;
+        private ArrayList<Title> titleList;
 
-        public MyCustomAdapter(Context context, int textViewResourceId,
-                               ArrayList<Game> gameList) {
-            super(context, textViewResourceId, gameList);
-            this.gameList = new ArrayList<Game>();
-            this.gameList.addAll(gameList);
+        public MyCustomAdapter(Context context, int textViewResourceId, ArrayList<Title> titleList) {
+            super(context, textViewResourceId, titleList);
+            this.titleList = new ArrayList<Title>();
+            this.titleList.addAll(titleList);
         }
 
         private class ViewHolder {
@@ -171,7 +160,7 @@ public class ExcludeGamesActivity extends Activity
                         Game game = (Game) cb.getTag();
                         game.setSelected(cb.isChecked());
 
-                        ((ExcludeGamesActivity)getContext()).saveExcludeGames();
+                        ((ExcludeTitlesActivity)getContext()).saveExcludeTitles();
                     }
                 });
             }
@@ -179,11 +168,11 @@ public class ExcludeGamesActivity extends Activity
                 holder = (ViewHolder) convertView.getTag();
             }
 
-            Game game = gameList.get(position);
+            Title title = titleList.get(position);
             holder.code.setText("");
-            holder.name.setText(Html.fromHtml(game.getName() + " (<i>" +  game.getTitles().size() + "</i>)"));
-            holder.name.setChecked(game.isSelected());
-            holder.name.setTag(game);
+            holder.name.setText(title.getName());
+            holder.name.setChecked(title.isSelected());
+            holder.name.setTag(title);
 
             return convertView;
         }

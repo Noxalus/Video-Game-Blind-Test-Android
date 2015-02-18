@@ -1,9 +1,8 @@
 package com.noxalus.vgbt.tasks;
 
-import com.noxalus.vgbt.entities.GameSerie;
-import java.util.ArrayList;
+import com.noxalus.vgbt.entities.GameSeries;
 
 public interface GetGameSeriesAsyncResponse
 {
-    void processFinish(ArrayList<GameSerie> output);
+    void processFinish(GameSeries output);
 }

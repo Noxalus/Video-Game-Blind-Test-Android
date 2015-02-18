@@ -42,13 +42,18 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".activities.GameSeriesActivity"
+            android:name=".activities.ExcludeGameSeriesActivity"
             android:label="@string/title_activity_game_series"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".activities.ExcludeGamesActivity"
             android:label="@string/title_activity_exclude_games"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".activities.ExcludeTitlesActivity"
+            android:label="@string/title_activity_exclude_titles"
             android:screenOrientation="portrait" >
         </activity>
     </application>

@@ -20,6 +20,11 @@ public class Game extends SelectableEntity
         titles.add(title);
     }
 
+    public ArrayList<Title> getTitles()
+    {
+        return titles;
+    }
+
     public Integer getGameSerieId()
     {
         return gameSerieId;

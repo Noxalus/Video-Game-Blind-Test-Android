@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.noxalus.vgbt.entities.Game;
 import com.noxalus.vgbt.entities.GameSerie;
+import com.noxalus.vgbt.entities.GameSeries;
 import com.noxalus.vgbt.entities.Title;
 
 import org.apache.http.HttpEntity;
@@ -27,12 +28,12 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-public class GetGameSeriesAsyncTask extends AsyncTask<String, String, ArrayList<GameSerie>>
+public class GetGameSeriesAsyncTask extends AsyncTask<String, String, GameSeries>
 {
     public GetGameSeriesAsyncResponse delegate = null;
 
     @Override
-    protected void onPostExecute(ArrayList<GameSerie> result) {
+    protected void onPostExecute(GameSeries result) {
         super.onPostExecute(result);
         delegate.processFinish(result);
     }
@@ -43,7 +44,7 @@ public class GetGameSeriesAsyncTask extends AsyncTask<String, String, ArrayList<
     }
 
     @Override
-    protected ArrayList<GameSerie> doInBackground(String... params) {
+    protected GameSeries doInBackground(String... params) {
 
         HttpGet uri = new HttpGet(params[0]);
 
@@ -85,7 +86,7 @@ public class GetGameSeriesAsyncTask extends AsyncTask<String, String, ArrayList<
 
             if (gameSerieNodes.getLength() > 0)
             {
-                ArrayList<GameSerie> gameSerieObjectList = new ArrayList<>();
+                GameSeries gameSerieObjectList = new GameSeries();
 
                 for (int i = 0; i < gameSerieNodes.getLength(); i++) {
 
