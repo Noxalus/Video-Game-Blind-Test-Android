@@ -8,19 +8,23 @@ import android.widget.EditText;
 
 import com.noxalus.vgbt.R;
 
-public class FeedbackActivity extends Activity {
+public class FeedbackActivity extends Activity
+{
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feedback);
 
         final EditText proposalsEditText = (EditText) findViewById(R.id.proposalsEditText);
 
         final Button sendButton = (Button) findViewById(R.id.sendButton);
-        sendButton.setOnClickListener(new View.OnClickListener() {
+        sendButton.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 sendProposals(proposalsEditText.getText().toString());
             }
         });

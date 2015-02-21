@@ -22,5 +22,6 @@
     <integer name="max_point_for_extract">5</integer>
     <integer name="max_seconds_to_answer">10</integer>
     <integer name="number_of_question_to_ask">30</integer>
+    <string name="title_activity_play">PlayActivity</string>
 
 </resources>

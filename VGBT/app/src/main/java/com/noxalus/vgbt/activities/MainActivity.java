@@ -22,7 +22,8 @@ public class MainActivity extends BaseActivity implements GetExtractNumberAsyncR
     TextView extractNumberTextView;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -31,22 +32,25 @@ public class MainActivity extends BaseActivity implements GetExtractNumberAsyncR
 
         if (isNetworkAvailable())
         {
-           getExtractNumber();
+            getExtractNumber();
         }
 
         final Button playButton = (Button) findViewById(R.id.playButton);
-        playButton.setOnClickListener(new View.OnClickListener() {
+        playButton.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
-                if (isNetworkAvailable()) {
-                    Intent intent = new Intent(MainActivity.this, ModeActivity.class);
+            public void onClick(View v)
+            {
+                if (isNetworkAvailable())
+                {
+                    Intent intent = new Intent(MainActivity.this, PlayActivity.class);
                     startActivity(intent);
                 }
                 else
                 {
                     Toast toast = Toast.makeText(getApplicationContext(), getResources().getString(R.string.not_connected), Toast.LENGTH_LONG);
                     TextView textView = (TextView) toast.getView().findViewById(android.R.id.message);
-                    if( textView != null)
+                    if (textView != null)
                         textView.setGravity(Gravity.CENTER);
 
                     toast.show();
@@ -55,25 +59,31 @@ public class MainActivity extends BaseActivity implements GetExtractNumberAsyncR
         });
 
         final Button achievementsButton = (Button) findViewById(R.id.achievementsButton);
-        achievementsButton.setOnClickListener(new View.OnClickListener() {
+        achievementsButton.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 getAchievements();
             }
         });
 
         final Button leaderBoardButton = (Button) findViewById(R.id.leaderboardButton);
-        leaderBoardButton.setOnClickListener(new View.OnClickListener() {
+        leaderBoardButton.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 getLeaderboards();
             }
         });
 
         final Button optionsButton = (Button) findViewById(R.id.optionsButton);
-        optionsButton.setOnClickListener(new View.OnClickListener() {
+        optionsButton.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 Intent intent = new Intent(MainActivity.this, ExcludeGameSeriesActivity.class);
                 startActivity(intent);
             }
@@ -98,11 +108,13 @@ public class MainActivity extends BaseActivity implements GetExtractNumberAsyncR
 
         int extractNumber = settings.getInt("extractNumber", 0);
 
-        if (extractNumber > 0 && extractNumber < output) {
+        if (extractNumber > 0 && extractNumber < output)
+        {
             extractNumberTextView.setText(Html.fromHtml(output + " extracts<br>(<b>" + (output - extractNumber) + " new</b>)"));
             editor.putBoolean("newExtracts", true);
         }
-        else {
+        else
+        {
             extractNumberTextView.setText(output + " extracts");
             editor.putBoolean("newExtracts", false);
         }
@@ -119,23 +131,27 @@ public class MainActivity extends BaseActivity implements GetExtractNumberAsyncR
     }
 
     @Override
-    public void onStart(){
+    public void onStart()
+    {
         super.onStart();
     }
 
     @Override
-    public void onStop(){
+    public void onStop()
+    {
         super.onStop();
     }
 
     @Override
-    public void onActivityResult(int request, int response, Intent data) {
+    public void onActivityResult(int request, int response, Intent data)
+    {
         super.onActivityResult(request, response, data);
     }
 
     public void getLeaderboards()
     {
-        if (agsClient != null) {
+        if (agsClient != null)
+        {
             if (agsClient.getPlayerClient().isSignedIn())
                 agsClient.getLeaderboardsClient().showLeaderboardsOverlay();
             else
@@ -145,7 +161,8 @@ public class MainActivity extends BaseActivity implements GetExtractNumberAsyncR
 
     public void getAchievements()
     {
-        if (agsClient != null) {
+        if (agsClient != null)
+        {
             if (agsClient.getPlayerClient().isSignedIn())
                 agsClient.getAchievementsClient().showAchievementsOverlay();
             else

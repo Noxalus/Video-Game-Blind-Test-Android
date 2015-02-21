@@ -10,17 +10,21 @@ import android.widget.Button;
 
 import com.noxalus.vgbt.R;
 
-public class ModeActivity extends Activity {
+public class ModeActivity extends Activity
+{
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mode);
 
         final Button nameButton = (Button) findViewById(R.id.nameButton);
-        nameButton.setOnClickListener(new View.OnClickListener() {
+        nameButton.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 Intent intent = new Intent(ModeActivity.this, QuizActivity.class);
                 intent.putExtra("mode", getResources().getString(R.string.name_game_mode));
                 startActivity(intent);
@@ -28,9 +32,11 @@ public class ModeActivity extends Activity {
         });
 
         final Button gameButton = (Button) findViewById(R.id.gameButton);
-        gameButton.setOnClickListener(new View.OnClickListener() {
+        gameButton.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 Intent intent = new Intent(ModeActivity.this, QuizActivity.class);
                 intent.putExtra("mode", getResources().getString(R.string.game_game_mode));
                 startActivity(intent);
@@ -38,9 +44,11 @@ public class ModeActivity extends Activity {
         });
 
         final Button composerButton = (Button) findViewById(R.id.composerButton);
-        composerButton.setOnClickListener(new View.OnClickListener() {
+        composerButton.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 Intent intent = new Intent(ModeActivity.this, QuizActivity.class);
                 intent.putExtra("mode", getResources().getString(R.string.composer_game_mode));
                 startActivity(intent);

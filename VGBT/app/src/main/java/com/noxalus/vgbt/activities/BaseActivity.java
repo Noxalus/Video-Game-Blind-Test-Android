@@ -15,33 +15,39 @@ public class BaseActivity extends Activity
     //reference to the agsClient
     protected AmazonGamesClient agsClient;
 
-    AmazonGamesCallback callback = new AmazonGamesCallback() {
+    AmazonGamesCallback callback = new AmazonGamesCallback()
+    {
         @Override
-        public void onServiceNotReady(AmazonGamesStatus status) {
+        public void onServiceNotReady(AmazonGamesStatus status)
+        {
             //unable to use service
             Log.d("VGBT", status.name());
         }
+
         @Override
-        public void onServiceReady(AmazonGamesClient amazonGamesClient) {
+        public void onServiceReady(AmazonGamesClient amazonGamesClient)
+        {
             agsClient = amazonGamesClient;
             Log.d("VGBT", "Ready to use Amazon GameCircle services!");
         }
     };
 
     //list of features your game uses (in this example, achievements and leaderboards)
-    EnumSet<AmazonGamesFeature> myGameFeatures = EnumSet.of(
-            AmazonGamesFeature.Achievements, AmazonGamesFeature.Leaderboards);
+    EnumSet<AmazonGamesFeature> myGameFeatures = EnumSet.of(AmazonGamesFeature.Achievements, AmazonGamesFeature.Leaderboards);
 
     @Override
-    public void onResume() {
+    public void onResume()
+    {
         super.onResume();
         AmazonGamesClient.initialize(this, callback, myGameFeatures);
     }
 
     @Override
-    public void onPause() {
+    public void onPause()
+    {
         super.onPause();
-        if (agsClient != null) {
+        if (agsClient != null)
+        {
             agsClient.release();
         }
     }

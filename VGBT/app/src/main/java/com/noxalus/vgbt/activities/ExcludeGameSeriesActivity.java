@@ -34,7 +34,8 @@ public class ExcludeGameSeriesActivity extends Activity implements GetGameSeries
     GameSeries gameSeries;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exclude_game_series);
 
@@ -44,21 +45,12 @@ public class ExcludeGameSeriesActivity extends Activity implements GetGameSeries
 
         if (newExtracts)
             getGameSeries();
-        else {
+        else
+        {
             Config.getInstance().loadGameSeries(getApplicationContext());
             gameSeries = Config.getInstance().getGameSeries();
             displayListView();
         }
-    }
-
-    private void getGameSeries()
-    {
-        // AsyncTask can't be executed multiple times
-        // we need to create a new instance each time
-        GetGameSeriesAsyncTask getGameSeriesAsyncTask = new GetGameSeriesAsyncTask();
-        getGameSeriesAsyncTask.delegate = this;
-
-        getGameSeriesAsyncTask.execute(getResources().getString(R.string.api) + "?gameSerie=-42");
     }
 
     private void getExcludeGameSeries()
@@ -68,8 +60,10 @@ public class ExcludeGameSeriesActivity extends Activity implements GetGameSeries
         Set<String> excludeGameSeriesSet = settings.getStringSet("excludeGameSeries", null);
         ArrayList<Integer> savedExcludeGameSeries = new ArrayList<Integer>();
 
-        if (excludeGameSeriesSet != null) {
-            for (String excludeGameSerie : excludeGameSeriesSet) {
+        if (excludeGameSeriesSet != null)
+        {
+            for (String excludeGameSerie : excludeGameSeriesSet)
+            {
                 savedExcludeGameSeries.add(Integer.parseInt(excludeGameSerie));
             }
         }
@@ -79,17 +73,6 @@ public class ExcludeGameSeriesActivity extends Activity implements GetGameSeries
             boolean isSelected = !savedExcludeGameSeries.contains(gameSerie.getId());
             gameSerie.setSelected(isSelected);
         }
-    }
-
-    @Override
-    public void processFinish(GameSeries output) {
-        gameSeries = output;
-
-        Config.getInstance().setGameSeries(gameSeries);
-        Config.getInstance().saveGameSeries(getApplicationContext());
-
-        getExcludeGameSeries();
-        displayListView();
     }
 
     private void saveExcludeGameSeries()
@@ -109,6 +92,28 @@ public class ExcludeGameSeriesActivity extends Activity implements GetGameSeries
         editor.commit();
     }
 
+    private void getGameSeries()
+    {
+        // AsyncTask can't be executed multiple times
+        // we need to create a new instance each time
+        GetGameSeriesAsyncTask getGameSeriesAsyncTask = new GetGameSeriesAsyncTask();
+        getGameSeriesAsyncTask.delegate = this;
+
+        getGameSeriesAsyncTask.execute(getResources().getString(R.string.api) + "?gameSerie=-42");
+    }
+
+    @Override
+    public void processFinish(GameSeries output)
+    {
+        gameSeries = output;
+
+        Config.getInstance().setGameSeries(gameSeries);
+        Config.getInstance().saveGameSeries(getApplicationContext());
+
+        getExcludeGameSeries();
+        displayListView();
+    }
+
     private void displayListView()
     {
         // Create an ArrayAdaptar from the String Array
@@ -118,9 +123,10 @@ public class ExcludeGameSeriesActivity extends Activity implements GetGameSeries
         // Assign adapter to ListView
         listView.setAdapter(dataAdapter);
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+            {
                 GameSerie gameSerie = (GameSerie) parent.getItemAtPosition(position);
 
                 Intent intent = new Intent(ExcludeGameSeriesActivity.this, ExcludeGamesActivity.class);
@@ -131,17 +137,19 @@ public class ExcludeGameSeriesActivity extends Activity implements GetGameSeries
 
     }
 
-    public class MyCustomAdapter extends ArrayAdapter<GameSerie> {
+    public class MyCustomAdapter extends ArrayAdapter<GameSerie>
+    {
         private ArrayList<GameSerie> gameSerieList;
 
-        public MyCustomAdapter(Context context, int textViewResourceId,
-                               ArrayList<GameSerie> gameSerieList) {
+        public MyCustomAdapter(Context context, int textViewResourceId, ArrayList<GameSerie> gameSerieList)
+        {
             super(context, textViewResourceId, gameSerieList);
             this.gameSerieList = new ArrayList<GameSerie>();
             this.gameSerieList.addAll(gameSerieList);
         }
 
-        private class ViewHolder {
+        private class ViewHolder
+        {
             TextView code;
             CheckBox name;
         }
@@ -151,9 +159,9 @@ public class ExcludeGameSeriesActivity extends Activity implements GetGameSeries
         {
             ViewHolder holder = null;
 
-            if (convertView == null) {
-                LayoutInflater vi = (LayoutInflater)getSystemService(
-                        Context.LAYOUT_INFLATER_SERVICE);
+            if (convertView == null)
+            {
+                LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 convertView = vi.inflate(R.layout.checkbox_item, null);
 
                 holder = new ViewHolder();
@@ -161,9 +169,11 @@ public class ExcludeGameSeriesActivity extends Activity implements GetGameSeries
                 holder.name = (CheckBox) convertView.findViewById(R.id.checkBox1);
                 convertView.setTag(holder);
 
-                holder.name.setOnClickListener( new View.OnClickListener() {
-                    public void onClick(View v) {
-                        CheckBox cb = (CheckBox) v ;
+                holder.name.setOnClickListener(new View.OnClickListener()
+                {
+                    public void onClick(View v)
+                    {
+                        CheckBox cb = (CheckBox) v;
                         GameSerie gameSerie = (GameSerie) cb.getTag();
 
                         gameSerie.setSelected(cb.isChecked());
@@ -172,7 +182,8 @@ public class ExcludeGameSeriesActivity extends Activity implements GetGameSeries
                     }
                 });
             }
-            else {
+            else
+            {
                 holder = (ViewHolder) convertView.getTag();
             }
 

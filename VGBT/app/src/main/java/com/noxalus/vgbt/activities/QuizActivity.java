@@ -29,7 +29,8 @@ import com.noxalus.vgbt.entities.Question;
 import com.noxalus.vgbt.tasks.GetQuizAsyncResponse;
 import com.noxalus.vgbt.tasks.GetQuizAsyncTask;
 
-public class QuizActivity extends Activity implements OnClickListener, OnCompletionListener, GetQuizAsyncResponse {
+public class QuizActivity extends Activity implements OnClickListener, OnCompletionListener, GetQuizAsyncResponse
+{
 
     private ImageButton buttonPlayPause;
     public TextView scoreTextView;
@@ -64,7 +65,8 @@ public class QuizActivity extends Activity implements OnClickListener, OnComplet
     long startTime = 0;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz);
 
@@ -73,7 +75,8 @@ public class QuizActivity extends Activity implements OnClickListener, OnComplet
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
+    public void onConfigurationChanged(Configuration newConfig)
+    {
         super.onConfigurationChanged(newConfig);
     }
 
@@ -82,7 +85,8 @@ public class QuizActivity extends Activity implements OnClickListener, OnComplet
     {
         super.onResume();
 
-        if (!mediaPlayer.isPlaying()) {
+        if (!mediaPlayer.isPlaying())
+        {
             waitToPlayMusic = false;
             playMusic();
         }
@@ -101,7 +105,8 @@ public class QuizActivity extends Activity implements OnClickListener, OnComplet
 
     private void updateAnswers()
     {
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 4; i++)
+        {
             answerButtonMap.get(i).setBackgroundResource(R.drawable.button);
             answerButtonMap.get(i).setText(questions.get(currentQuestionId).getAnswers().get(i));
         }
@@ -115,9 +120,12 @@ public class QuizActivity extends Activity implements OnClickListener, OnComplet
 
         String excludeGameSeries = "";
         boolean firstElement = true;
-        if (savedExcludeGameSeries != null) {
-            for (String excludeGameSerie : savedExcludeGameSeries) {
-                if (firstElement) {
+        if (savedExcludeGameSeries != null)
+        {
+            for (String excludeGameSerie : savedExcludeGameSeries)
+            {
+                if (firstElement)
+                {
                     excludeGameSeries += excludeGameSerie;
                     firstElement = false;
                 }
@@ -137,9 +145,12 @@ public class QuizActivity extends Activity implements OnClickListener, OnComplet
 
         String excludeGames = "";
         boolean firstElement = true;
-        if (savedExcludeGames != null) {
-            for (String excludeGame : savedExcludeGames) {
-                if (firstElement) {
+        if (savedExcludeGames != null)
+        {
+            for (String excludeGame : savedExcludeGames)
+            {
+                if (firstElement)
+                {
                     excludeGames += excludeGame;
                     firstElement = false;
                 }
@@ -170,8 +181,10 @@ public class QuizActivity extends Activity implements OnClickListener, OnComplet
     }
 
     @Override
-    public void processFinish(ArrayList<Question> output) {
-        if (!mediaPlayerIsReleased) {
+    public void processFinish(ArrayList<Question> output)
+    {
+        if (!mediaPlayerIsReleased)
+        {
             questions = output;
             answersReady = true;
             nextQuestion();
@@ -180,20 +193,22 @@ public class QuizActivity extends Activity implements OnClickListener, OnComplet
         }
     }
 
-    private void initView() {
+    private void initView()
+    {
         correctSound = MediaPlayer.create(QuizActivity.this, R.raw.correct);
         wrongSound = MediaPlayer.create(QuizActivity.this, R.raw.wrong);
 
-        buttonPlayPause = (ImageButton)findViewById(R.id.imageButton);
+        buttonPlayPause = (ImageButton) findViewById(R.id.imageButton);
         buttonPlayPause.setOnClickListener(this);
 
-        scoreTextView = (TextView)findViewById(R.id.scoreTextView);
+        scoreTextView = (TextView) findViewById(R.id.scoreTextView);
 
         nextQuestionHandler = new Handler();
 
         // Create life icons
         lifeIconImageViewList = new ArrayList<ImageView>();
-        for (int i = 0; i < life; i++) {
+        for (int i = 0; i < life; i++)
+        {
             ImageView lifeIcon = new ImageView(getApplicationContext());
             lifeIcon.setImageDrawable(getResources().getDrawable(R.drawable.life));
             RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(64, 64);
@@ -220,12 +235,13 @@ public class QuizActivity extends Activity implements OnClickListener, OnComplet
 
         answerButtonMap = new HashMap<Integer, Button>();
 
-        answerButtonMap.put(0, (Button)findViewById(R.id.answerButton1));
-        answerButtonMap.put(1, (Button)findViewById(R.id.answerButton2));
-        answerButtonMap.put(2, (Button)findViewById(R.id.answerButton3));
-        answerButtonMap.put(3, (Button)findViewById(R.id.answerButton4));
+        answerButtonMap.put(0, (Button) findViewById(R.id.answerButton1));
+        answerButtonMap.put(1, (Button) findViewById(R.id.answerButton2));
+        answerButtonMap.put(2, (Button) findViewById(R.id.answerButton3));
+        answerButtonMap.put(3, (Button) findViewById(R.id.answerButton4));
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 4; i++)
+        {
             ButtonClickListener buttonClickListener = new ButtonClickListener(i, answerButtonMap.get(i));
             answerButtonMap.get(i).setOnClickListener(buttonClickListener);
         }
@@ -234,11 +250,14 @@ public class QuizActivity extends Activity implements OnClickListener, OnComplet
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         mediaPlayer.setOnCompletionListener(this);
 
-        mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+        mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener()
+        {
             @Override
-            public void onPrepared(MediaPlayer mp) {
+            public void onPrepared(MediaPlayer mp)
+            {
                 musicIsReady = true;
-                if (!mediaPlayer.isPlaying() && !waitToPlayMusic) {
+                if (!mediaPlayer.isPlaying() && !waitToPlayMusic)
+                {
                     playMusic();
                 }
             }
@@ -267,26 +286,33 @@ public class QuizActivity extends Activity implements OnClickListener, OnComplet
 
     private void loadMusic()
     {
-        try {
-            String currentMusicUrl = getResources().getString(R.string.api)  + "mp3.php?id=" + questions.get(currentQuestionId).getExtractId() + "&time=" + getResources().getInteger(R.integer.second_to_stream);
+        try
+        {
+            String currentMusicUrl = getResources().getString(R.string.api) + "mp3.php?id=" + questions.get(currentQuestionId).getExtractId() + "&time=" + getResources().getInteger(R.integer.second_to_stream);
             mediaPlayer.setDataSource(currentMusicUrl);
             mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mediaPlayer.prepareAsync();
             musicIsReady = false;
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             e.printStackTrace();
         }
     }
 
     @Override
-    public void onClick(View v) {
-        if(v.getId() == R.id.imageButton){
+    public void onClick(View v)
+    {
+        if (v.getId() == R.id.imageButton)
+        {
             loadMusic();
 
-            if(!mediaPlayer.isPlaying()){
+            if (!mediaPlayer.isPlaying())
+            {
                 mediaPlayer.start();
                 buttonPlayPause.setImageResource(R.drawable.button_pause);
-            }else {
+            }
+            else
+            {
                 mediaPlayer.pause();
                 buttonPlayPause.setImageResource(R.drawable.button_play);
             }
@@ -294,11 +320,13 @@ public class QuizActivity extends Activity implements OnClickListener, OnComplet
     }
 
     @Override
-    public void onCompletion(MediaPlayer mp) {
+    public void onCompletion(MediaPlayer mp)
+    {
         buttonPlayPause.setImageResource(R.drawable.button_play);
     }
 
-    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
+    {
         int secondaryPosition = seekBar.getSecondaryProgress();
         if (progress > secondaryPosition)
             seekBar.setProgress(secondaryPosition);
@@ -306,11 +334,7 @@ public class QuizActivity extends Activity implements OnClickListener, OnComplet
 
     private String convertMillisecondToTime(int milliseconds)
     {
-        return String.format("%02d:%02d",
-                TimeUnit.MILLISECONDS.toMinutes(milliseconds),
-                TimeUnit.MILLISECONDS.toSeconds(milliseconds) -
-                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(milliseconds))
-        );
+        return String.format("%02d:%02d", TimeUnit.MILLISECONDS.toMinutes(milliseconds), TimeUnit.MILLISECONDS.toSeconds(milliseconds) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(milliseconds)));
     }
 
     public class ButtonClickListener implements View.OnClickListener
@@ -329,8 +353,10 @@ public class QuizActivity extends Activity implements OnClickListener, OnComplet
         @Override
         public void onClick(View v)
         {
-            if (!answerGiven && answersReady) {
-                if (questions.get(currentQuestionId).getAnswerIndex() == id) {
+            if (!answerGiven && answersReady)
+            {
+                if (questions.get(currentQuestionId).getAnswerIndex() == id)
+                {
                     button.setBackgroundResource(R.drawable.button_correct);
                     correctSound.start();
 
@@ -340,7 +366,7 @@ public class QuizActivity extends Activity implements OnClickListener, OnComplet
 
                     int maxPointForExtract = getResources().getInteger(R.integer.max_point_for_extract);
                     int maxSecondToAnswer = getResources().getInteger(R.integer.max_seconds_to_answer);
-                    float factor = (float)maxSecondToAnswer / (float)maxPointForExtract;
+                    float factor = (float) maxSecondToAnswer / (float) maxPointForExtract;
 
                     if (seconds >= maxSecondToAnswer || millis < 750)
                         score++;
@@ -348,7 +374,9 @@ public class QuizActivity extends Activity implements OnClickListener, OnComplet
                         score += Math.ceil((maxSecondToAnswer - seconds) / factor);
 
                     scoreTextView.setText(Integer.toString(score));
-                } else {
+                }
+                else
+                {
                     wrongSound.start();
 
                     int answerId = questions.get(currentQuestionId).getAnswerIndex();
@@ -361,7 +389,8 @@ public class QuizActivity extends Activity implements OnClickListener, OnComplet
 
                 answerGiven = true;
 
-                if (life > 0) {
+                if (life > 0)
+                {
                     if (mediaPlayer.isPlaying())
                         mediaPlayer.stop();
 
@@ -373,8 +402,10 @@ public class QuizActivity extends Activity implements OnClickListener, OnComplet
                     loadMusic();
                 }
 
-                nextQuestionHandler.postDelayed(new Runnable() {
-                    public void run() {
+                nextQuestionHandler.postDelayed(new Runnable()
+                {
+                    public void run()
+                    {
                         if (life <= 0)
                         {
                             if (mediaPlayer.isPlaying())
@@ -389,7 +420,8 @@ public class QuizActivity extends Activity implements OnClickListener, OnComplet
                             startActivity(intent);
                             finish();
                         }
-                        else {
+                        else
+                        {
                             answerGiven = false;
                             if (!mediaPlayer.isPlaying() && musicIsReady)
                                 playMusic();

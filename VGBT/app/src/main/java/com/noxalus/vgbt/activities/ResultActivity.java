@@ -18,14 +18,17 @@ import com.noxalus.vgbt.R;
 public class ResultActivity extends BaseActivity
 {
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
 
         final Button backButton = (Button) findViewById(R.id.backButton);
-        backButton.setOnClickListener(new View.OnClickListener() {
+        backButton.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 Intent intent = new Intent(ResultActivity.this, MainActivity.class);
                 startActivity(intent);
             }
@@ -33,7 +36,8 @@ public class ResultActivity extends BaseActivity
     }
 
     @Override
-    public void onStart(){
+    public void onStart()
+    {
         super.onStart();
 
         if (agsClient == null)
@@ -43,16 +47,19 @@ public class ResultActivity extends BaseActivity
     }
 
     @Override
-    public void onStop(){
+    public void onStop()
+    {
         super.onStop();
     }
 
     @Override
-    public void onActivityResult(int request, int response, Intent data) {
+    public void onActivityResult(int request, int response, Intent data)
+    {
         super.onActivityResult(request, response, data);
     }
 
-    private void submitScore(){
+    private void submitScore()
+    {
 
         int score = getIntent().getIntExtra("score", 0);
         String mode = getIntent().getStringExtra("mode");
@@ -97,7 +104,8 @@ public class ResultActivity extends BaseActivity
         switch (mode)
         {
             case "nom":
-                if (score > bestScoreName) {
+                if (score > bestScoreName)
+                {
                     bestScoreName = score;
                     editor.putInt("bestScoreName", score);
                 }
@@ -109,7 +117,8 @@ public class ResultActivity extends BaseActivity
                 break;
 
             case "jeu":
-                if (score > bestScoreGame) {
+                if (score > bestScoreGame)
+                {
                     bestScoreGame = score;
                     editor.putInt("bestScoreGame", score);
                 }
@@ -121,7 +130,8 @@ public class ResultActivity extends BaseActivity
                 break;
 
             case "compositeur":
-                if (score > bestScoreComposer) {
+                if (score > bestScoreComposer)
+                {
                     bestScoreComposer = score;
                     editor.putInt("bestScoreComposer", score);
                 }
@@ -138,8 +148,10 @@ public class ResultActivity extends BaseActivity
 
     public void submitScoreGPGS(int score, String leaderboardId)
     {
-        if (agsClient != null) {
-            if (agsClient.getPlayerClient().isSignedIn()) {
+        if (agsClient != null)
+        {
+            if (agsClient.getPlayerClient().isSignedIn())
+            {
                 LeaderboardsClient lbClient = agsClient.getLeaderboardsClient();
                 AGResponseHandle<SubmitScoreResponse> handle = lbClient.submitScore(leaderboardId, score);
             }
@@ -148,8 +160,10 @@ public class ResultActivity extends BaseActivity
 
     public void unlockAchievementGPGS(String achievementId)
     {
-        if (agsClient != null) {
-            if (agsClient.getPlayerClient().isSignedIn()) {
+        if (agsClient != null)
+        {
+            if (agsClient.getPlayerClient().isSignedIn())
+            {
                 AchievementsClient acClient = agsClient.getAchievementsClient();
                 AGResponseHandle<UpdateProgressResponse> handle = acClient.updateProgress(achievementId, 100.0f);
             }

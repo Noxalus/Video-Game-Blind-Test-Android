@@ -30,7 +30,8 @@ public class ExcludeTitlesActivity extends Activity
     Integer gameId;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exclude_titles);
 
@@ -72,30 +73,27 @@ public class ExcludeTitlesActivity extends Activity
 
     private void saveExcludeTitles()
     {
-        /*
         SharedPreferences settings = getSharedPreferences("VGBT", 0);
         SharedPreferences.Editor editor = settings.edit();
 
-        // If game serie is exclude, we delete it from the exclude game serie list
-        if (isGameSerieExclude()) {
-            Set<String> excludeGameSeries = settings.getStringSet("excludeGameSeries", null);
+        Set<String> excludeTitles = new HashSet<String>();
+        int remainingTitlesNumber = 0;
 
-            excludeGameSeries.remove(gameSerieId.toString());
-
-            editor.putStringSet("excludeGameSeries", excludeGameSeries);
-        }
-
-        Set<String> excludeGames = new HashSet<String>();
-
-        for (Game game : games)
+        for (Title title : titles)
         {
-            if (!game.isSelected())
-                excludeGames.add(game.getId().toString());
+            if (!title.isSelected())
+                excludeTitles.add(title.getId().toString());
+            else
+                remainingTitlesNumber++;
         }
 
-        editor.putStringSet("excludeGames", excludeGames);
+        if (remainingTitlesNumber == 0)
+        {
+            // TODO: Exclude the game instead of all titles
+        }
+
+        editor.putStringSet("excludeTitles", excludeTitles);
         editor.commit();
-        */
     }
 
     private boolean isTitleExclude()
@@ -104,8 +102,10 @@ public class ExcludeTitlesActivity extends Activity
 
         Set<String> excludeTitleSet = settings.getStringSet("excludeTitles", null);
 
-        if (excludeTitleSet != null) {
-            for (String excludeTitle : excludeTitleSet) {
+        if (excludeTitleSet != null)
+        {
+            for (String excludeTitle : excludeTitleSet)
+            {
                 if (this.gameId == Integer.parseInt(excludeTitle))
                     return true;
             }
@@ -124,17 +124,20 @@ public class ExcludeTitlesActivity extends Activity
         listView.setAdapter(dataAdapter);
     }
 
-    private class MyCustomAdapter extends ArrayAdapter<Title> {
+    private class MyCustomAdapter extends ArrayAdapter<Title>
+    {
 
         private ArrayList<Title> titleList;
 
-        public MyCustomAdapter(Context context, int textViewResourceId, ArrayList<Title> titleList) {
+        public MyCustomAdapter(Context context, int textViewResourceId, ArrayList<Title> titleList)
+        {
             super(context, textViewResourceId, titleList);
             this.titleList = new ArrayList<Title>();
             this.titleList.addAll(titleList);
         }
 
-        private class ViewHolder {
+        private class ViewHolder
+        {
             TextView code;
             CheckBox name;
         }
@@ -144,9 +147,9 @@ public class ExcludeTitlesActivity extends Activity
         {
             ViewHolder holder = null;
 
-            if (convertView == null) {
-                LayoutInflater vi = (LayoutInflater)getSystemService(
-                        Context.LAYOUT_INFLATER_SERVICE);
+            if (convertView == null)
+            {
+                LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 convertView = vi.inflate(R.layout.checkbox_item, null);
 
                 holder = new ViewHolder();
@@ -154,17 +157,20 @@ public class ExcludeTitlesActivity extends Activity
                 holder.name = (CheckBox) convertView.findViewById(R.id.checkBox1);
                 convertView.setTag(holder);
 
-                holder.name.setOnClickListener( new View.OnClickListener() {
-                    public void onClick(View v) {
-                        CheckBox cb = (CheckBox) v ;
-                        Game game = (Game) cb.getTag();
-                        game.setSelected(cb.isChecked());
+                holder.name.setOnClickListener(new View.OnClickListener()
+                {
+                    public void onClick(View v)
+                    {
+                        CheckBox cb = (CheckBox) v;
+                        Title title = (Title) cb.getTag();
+                        title.setSelected(cb.isChecked());
 
-                        ((ExcludeTitlesActivity)getContext()).saveExcludeTitles();
+                        ((ExcludeTitlesActivity) getContext()).saveExcludeTitles();
                     }
                 });
             }
-            else {
+            else
+            {
                 holder = (ViewHolder) convertView.getTag();
             }
 

@@ -32,7 +32,8 @@ public class ExcludeGamesActivity extends Activity
     Integer gameSerieId;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exclude_games);
 
@@ -50,8 +51,10 @@ public class ExcludeGamesActivity extends Activity
         Set<String> excludeGamesSet = settings.getStringSet("excludeGames", null);
         ArrayList<Integer> savedExcludeGames = new ArrayList<Integer>();
 
-        if (excludeGamesSet != null) {
-            for (String excludeGame : excludeGamesSet) {
+        if (excludeGamesSet != null)
+        {
+            for (String excludeGame : excludeGamesSet)
+            {
                 savedExcludeGames.add(Integer.parseInt(excludeGame));
             }
         }
@@ -59,7 +62,8 @@ public class ExcludeGamesActivity extends Activity
         boolean isGameSerieExclude = isGameSerieExclude();
         for (Game game : games)
         {
-            if (!isGameSerieExclude) {
+            if (!isGameSerieExclude)
+            {
                 boolean isSelected = !savedExcludeGames.contains(game.getId());
                 game.setSelected(isSelected);
             }
@@ -76,7 +80,8 @@ public class ExcludeGamesActivity extends Activity
         SharedPreferences.Editor editor = settings.edit();
 
         // If game serie is exclude, we delete it from the exclude game serie list
-        if (isGameSerieExclude()) {
+        if (isGameSerieExclude())
+        {
             Set<String> excludeGameSeries = settings.getStringSet("excludeGameSeries", null);
 
             excludeGameSeries.remove(gameSerieId.toString());
@@ -103,8 +108,10 @@ public class ExcludeGamesActivity extends Activity
         Set<String> excludeGameSeriesSet = settings.getStringSet("excludeGameSeries", null);
         ArrayList<Integer> savedExcludeGameSeries = new ArrayList<Integer>();
 
-        if (excludeGameSeriesSet != null) {
-            for (String excludeGameSerie : excludeGameSeriesSet) {
+        if (excludeGameSeriesSet != null)
+        {
+            for (String excludeGameSerie : excludeGameSeriesSet)
+            {
                 if (this.gameSerieId == Integer.parseInt(excludeGameSerie))
                     return true;
             }
@@ -122,9 +129,10 @@ public class ExcludeGamesActivity extends Activity
         // Assign adapter to ListView
         listView.setAdapter(dataAdapter);
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+            {
                 Game game = (Game) parent.getItemAtPosition(position);
 
                 Intent intent = new Intent(ExcludeGamesActivity.this, ExcludeTitlesActivity.class);
@@ -134,18 +142,20 @@ public class ExcludeGamesActivity extends Activity
         });
     }
 
-    private class MyCustomAdapter extends ArrayAdapter<Game> {
+    private class MyCustomAdapter extends ArrayAdapter<Game>
+    {
 
         private ArrayList<Game> gameList;
 
-        public MyCustomAdapter(Context context, int textViewResourceId,
-                               ArrayList<Game> gameList) {
+        public MyCustomAdapter(Context context, int textViewResourceId, ArrayList<Game> gameList)
+        {
             super(context, textViewResourceId, gameList);
             this.gameList = new ArrayList<Game>();
             this.gameList.addAll(gameList);
         }
 
-        private class ViewHolder {
+        private class ViewHolder
+        {
             TextView code;
             CheckBox name;
         }
@@ -155,9 +165,9 @@ public class ExcludeGamesActivity extends Activity
         {
             ViewHolder holder = null;
 
-            if (convertView == null) {
-                LayoutInflater vi = (LayoutInflater)getSystemService(
-                        Context.LAYOUT_INFLATER_SERVICE);
+            if (convertView == null)
+            {
+                LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 convertView = vi.inflate(R.layout.checkbox_item, null);
 
                 holder = new ViewHolder();
@@ -165,23 +175,26 @@ public class ExcludeGamesActivity extends Activity
                 holder.name = (CheckBox) convertView.findViewById(R.id.checkBox1);
                 convertView.setTag(holder);
 
-                holder.name.setOnClickListener( new View.OnClickListener() {
-                    public void onClick(View v) {
-                        CheckBox cb = (CheckBox) v ;
+                holder.name.setOnClickListener(new View.OnClickListener()
+                {
+                    public void onClick(View v)
+                    {
+                        CheckBox cb = (CheckBox) v;
                         Game game = (Game) cb.getTag();
                         game.setSelected(cb.isChecked());
 
-                        ((ExcludeGamesActivity)getContext()).saveExcludeGames();
+                        ((ExcludeGamesActivity) getContext()).saveExcludeGames();
                     }
                 });
             }
-            else {
+            else
+            {
                 holder = (ViewHolder) convertView.getTag();
             }
 
             Game game = gameList.get(position);
             holder.code.setText("");
-            holder.name.setText(Html.fromHtml(game.getName() + " (<i>" +  game.getTitles().size() + "</i>)"));
+            holder.name.setText(Html.fromHtml(game.getName() + " (<i>" + game.getTitles().size() + "</i>)"));
             holder.name.setChecked(game.isSelected());
             holder.name.setTag(game);
 
