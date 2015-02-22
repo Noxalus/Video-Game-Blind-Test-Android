@@ -9,8 +9,13 @@ import android.os.Bundle;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Handler;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -33,7 +38,8 @@ public class QuizActivity extends Activity implements OnClickListener, OnComplet
 {
 
     private ImageButton buttonPlayPause;
-    public TextView scoreTextView;
+    private TextView scoreTextView;
+    private TextView earnedPointsTextView;
     public ArrayList<ImageView> lifeIconImageViewList;
 
     private HashMap<Integer, Button> answerButtonMap;
@@ -57,18 +63,58 @@ public class QuizActivity extends Activity implements OnClickListener, OnComplet
     private int life = 3;
     private boolean answerGiven = false;
 
+    // Intent extra values
     String mode;
+    boolean rankedGame;
 
     MediaPlayer correctSound;
     MediaPlayer wrongSound;
 
     long startTime = 0;
 
+    int fingerPositionX = 0;
+    int fingerPositionY = 0;
+    int buttonHeight;
+
+    // Animations
+    AnimationSet earnedPointsAnimationSet;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz);
+
+        earnedPointsTextView = (TextView) findViewById(R.id.earnedPointsTextView);
+
+        // Set animations
+        earnedPointsAnimationSet = new AnimationSet(false);
+
+        Animation fadeOutAnimation = AnimationUtils.loadAnimation(QuizActivity.this, android.R.anim.fade_out);
+        fadeOutAnimation.setDuration(750);
+        fadeOutAnimation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation)
+            {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                earnedPointsTextView.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation)
+            {
+
+            }
+        });
+        earnedPointsAnimationSet.addAnimation(fadeOutAnimation);
+
+        Animation slideOutRight = AnimationUtils.loadAnimation(QuizActivity.this, android.R.anim.slide_out_right);
+        slideOutRight.setDuration(750);
+        earnedPointsAnimationSet.addAnimation(slideOutRight);
 
         initView();
         getQuiz();
@@ -222,7 +268,7 @@ public class QuizActivity extends Activity implements OnClickListener, OnComplet
 
             lifeIcon.setLayoutParams(layoutParams);
 
-            RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.RootRelativeLayout);
+            RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.QuizRootRelativeLayout);
 
             lifeIcon.setId(4242 + i);
 
@@ -232,6 +278,7 @@ public class QuizActivity extends Activity implements OnClickListener, OnComplet
         }
 
         mode = getIntent().getStringExtra("mode");
+        rankedGame = getIntent().getBooleanExtra("rankedGame", false);
 
         answerButtonMap = new HashMap<Integer, Button>();
 
@@ -243,7 +290,10 @@ public class QuizActivity extends Activity implements OnClickListener, OnComplet
         for (int i = 0; i < 4; i++)
         {
             ButtonClickListener buttonClickListener = new ButtonClickListener(i, answerButtonMap.get(i));
+            ButtonTouchListener buttonTouchListener = new ButtonTouchListener(i, answerButtonMap.get(i));
+
             answerButtonMap.get(i).setOnClickListener(buttonClickListener);
+            answerButtonMap.get(i).setOnTouchListener(buttonTouchListener);
         }
 
         mediaPlayer = new MediaPlayer();
@@ -367,12 +417,19 @@ public class QuizActivity extends Activity implements OnClickListener, OnComplet
                     int maxPointForExtract = getResources().getInteger(R.integer.max_point_for_extract);
                     int maxSecondToAnswer = getResources().getInteger(R.integer.max_seconds_to_answer);
                     float factor = (float) maxSecondToAnswer / (float) maxPointForExtract;
+                    int earnedPoints = 1;
 
-                    if (seconds >= maxSecondToAnswer || millis < 750)
-                        score++;
-                    else
-                        score += Math.ceil((maxSecondToAnswer - seconds) / factor);
+                    if (seconds < maxSecondToAnswer && millis > 750)
+                        earnedPoints = (int)Math.ceil((maxSecondToAnswer - seconds) / factor);
 
+                    earnedPointsTextView.setVisibility(View.VISIBLE);
+                    earnedPointsTextView.setText("+" + earnedPoints);
+                    earnedPointsTextView.setX(fingerPositionX - 50);
+                    earnedPointsTextView.setY(fingerPositionY - (buttonHeight / 2) - 120);
+
+                    earnedPointsTextView.startAnimation(earnedPointsAnimationSet);
+
+                    score += earnedPoints;
                     scoreTextView.setText(Integer.toString(score));
                 }
                 else
@@ -417,6 +474,8 @@ public class QuizActivity extends Activity implements OnClickListener, OnComplet
                             Intent intent = new Intent(QuizActivity.this, ResultActivity.class);
                             intent.putExtra("score", score);
                             intent.putExtra("mode", mode);
+                            intent.putExtra("rankedGame", rankedGame);
+
                             startActivity(intent);
                             finish();
                         }
@@ -433,6 +492,40 @@ public class QuizActivity extends Activity implements OnClickListener, OnComplet
                     }
                 }, 1500);
             }
+        }
+    }
+
+    public class ButtonTouchListener implements View.OnTouchListener
+    {
+        int id;
+        Button button;
+
+        public ButtonTouchListener(int id, Button button)
+        {
+            super();
+
+            this.id = id;
+            this.button = button;
+        }
+
+        @Override
+        public boolean onTouch(View v, MotionEvent event)
+        {
+            if (event.getAction() == android.view.MotionEvent.ACTION_DOWN)
+            {
+                fingerPositionX = (int)event.getX();
+                fingerPositionY = (int)event.getY();
+
+                buttonHeight = button.getHeight();
+
+                int positions[] = new int[2];
+                button.getLocationInWindow(positions);
+
+                fingerPositionX += positions[0];
+                fingerPositionY += positions[1];
+            }
+
+            return false;
         }
     }
 }

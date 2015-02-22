@@ -27,6 +27,15 @@
         android:layout_centerHorizontal="true"
         android:textSize="100dp" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/bestScoreTextView"
+        android:layout_below="@+id/scoreTextView"
+        android:layout_centerHorizontal="true"
+        android:text="" />
+
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -35,13 +44,4 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         style="@style/ButtonStyle" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:id="@+id/bestScoreTextView"
-        android:layout_below="@+id/scoreTextView"
-        android:layout_centerHorizontal="true"
-        android:text="0" />
 </RelativeLayout>

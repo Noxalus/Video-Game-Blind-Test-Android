@@ -19,6 +19,8 @@ public class ModeActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mode);
 
+        final boolean rankedGame = getIntent().getBooleanExtra("rankedGame", false);
+
         final Button nameButton = (Button) findViewById(R.id.nameButton);
         nameButton.setOnClickListener(new View.OnClickListener()
         {
@@ -27,6 +29,8 @@ public class ModeActivity extends Activity
             {
                 Intent intent = new Intent(ModeActivity.this, QuizActivity.class);
                 intent.putExtra("mode", getResources().getString(R.string.name_game_mode));
+                intent.putExtra("rankedGame", rankedGame);
+
                 startActivity(intent);
             }
         });
@@ -39,6 +43,8 @@ public class ModeActivity extends Activity
             {
                 Intent intent = new Intent(ModeActivity.this, QuizActivity.class);
                 intent.putExtra("mode", getResources().getString(R.string.game_game_mode));
+                intent.putExtra("rankedGame", rankedGame);
+
                 startActivity(intent);
             }
         });
@@ -51,6 +57,8 @@ public class ModeActivity extends Activity
             {
                 Intent intent = new Intent(ModeActivity.this, QuizActivity.class);
                 intent.putExtra("mode", getResources().getString(R.string.composer_game_mode));
+                intent.putExtra("rankedGame", rankedGame);
+
                 startActivity(intent);
             }
         });

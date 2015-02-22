@@ -17,6 +17,8 @@ import com.noxalus.vgbt.R;
 
 public class ResultActivity extends BaseActivity
 {
+    boolean rankedGame;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -33,6 +35,8 @@ public class ResultActivity extends BaseActivity
                 startActivity(intent);
             }
         });
+
+        rankedGame = getIntent().getBooleanExtra("rankedGame", false);
     }
 
     @Override
@@ -60,10 +64,73 @@ public class ResultActivity extends BaseActivity
 
     private void submitScore()
     {
-
         int score = getIntent().getIntExtra("score", 0);
         String mode = getIntent().getStringExtra("mode");
 
+        manageAchievements(score, mode);
+
+        final TextView scoreTextView = (TextView) findViewById(R.id.scoreTextView);
+        scoreTextView.setText(Integer.toString(score));
+
+        if (rankedGame)
+        {
+            final TextView bestScoreTextView = (TextView) findViewById(R.id.bestScoreTextView);
+
+            SharedPreferences settings = getSharedPreferences("VGBT", 0);
+            SharedPreferences.Editor editor = settings.edit();
+
+            int bestScoreName = settings.getInt("bestScoreName", 0);
+            int bestScoreGame = settings.getInt("bestScoreGame", 0);
+            int bestScoreComposer = settings.getInt("bestScoreComposer", 0);
+
+            switch (mode)
+            {
+                case "name":
+                    if (score > bestScoreName)
+                    {
+                        bestScoreName = score;
+                        editor.putInt("bestScoreName", score);
+                    }
+
+                    bestScoreTextView.setText("(Best: " + Integer.toString(bestScoreName) + ")");
+
+                    submitScoreGPGS(score, getResources().getString(R.string.amazon_name_leaderboard));
+
+                    break;
+
+                case "game":
+                    if (score > bestScoreGame)
+                    {
+                        bestScoreGame = score;
+                        editor.putInt("bestScoreGame", score);
+                    }
+
+                    bestScoreTextView.setText("(Best: " + Integer.toString(bestScoreGame) + ")");
+
+                    submitScoreGPGS(score, getResources().getString(R.string.amazon_game_leaderboard));
+
+                    break;
+
+                case "composer":
+                    if (score > bestScoreComposer)
+                    {
+                        bestScoreComposer = score;
+                        editor.putInt("bestScoreComposer", score);
+                    }
+
+                    bestScoreTextView.setText("(Best: " + Integer.toString(bestScoreComposer) + ")");
+
+                    submitScoreGPGS(score, getResources().getString(R.string.amazon_composer_leaderboard));
+
+                    break;
+            }
+
+            editor.commit();
+        }
+    }
+
+    public void manageAchievements(int score, String mode)
+    {
         if (score > 0)
             unlockAchievementGPGS(getResources().getString(R.string.amazon_better_than_nothing_achievement));
 
@@ -82,72 +149,19 @@ public class ResultActivity extends BaseActivity
         if (score >= 1000)
             unlockAchievementGPGS(getResources().getString(R.string.amazon_virtuoso_achievement));
 
-        if (mode.equals("nom"))
+        if (mode.equals("name"))
             unlockAchievementGPGS(getResources().getString(R.string.amazon_name_game_mode_achievement));
-        else if (mode.equals("jeu"))
+        else if (mode.equals("game"))
             unlockAchievementGPGS(getResources().getString(R.string.amazon_game_game_mode_achievement));
-        else if (mode.equals("compositeur"))
+        else if (mode.equals("composer"))
             unlockAchievementGPGS(getResources().getString(R.string.amazon_composer_game_mode_achievement));
-
-        final TextView scoreTextView = (TextView) findViewById(R.id.scoreTextView);
-        scoreTextView.setText(Integer.toString(score));
-
-        final TextView bestScoreTextView = (TextView) findViewById(R.id.bestScoreTextView);
-
-        SharedPreferences settings = getSharedPreferences("VGBT", 0);
-        SharedPreferences.Editor editor = settings.edit();
-
-        int bestScoreName = settings.getInt("bestScoreName", 0);
-        int bestScoreGame = settings.getInt("bestScoreGame", 0);
-        int bestScoreComposer = settings.getInt("bestScoreComposer", 0);
-
-        switch (mode)
-        {
-            case "nom":
-                if (score > bestScoreName)
-                {
-                    bestScoreName = score;
-                    editor.putInt("bestScoreName", score);
-                }
-
-                bestScoreTextView.setText("(Best: " + Integer.toString(bestScoreName) + ")");
-
-                submitScoreGPGS(score, getResources().getString(R.string.amazon_name_leaderboard));
-
-                break;
-
-            case "jeu":
-                if (score > bestScoreGame)
-                {
-                    bestScoreGame = score;
-                    editor.putInt("bestScoreGame", score);
-                }
-
-                bestScoreTextView.setText("(Best: " + Integer.toString(bestScoreGame) + ")");
-
-                submitScoreGPGS(score, getResources().getString(R.string.amazon_game_leaderboard));
-
-                break;
-
-            case "compositeur":
-                if (score > bestScoreComposer)
-                {
-                    bestScoreComposer = score;
-                    editor.putInt("bestScoreComposer", score);
-                }
-
-                bestScoreTextView.setText("(Best: " + Integer.toString(bestScoreComposer) + ")");
-
-                submitScoreGPGS(score, getResources().getString(R.string.amazon_composer_leaderboard));
-
-                break;
-        }
-
-        editor.commit();
     }
 
     public void submitScoreGPGS(int score, String leaderboardId)
     {
+        if (!rankedGame)
+            return;
+
         if (agsClient != null)
         {
             if (agsClient.getPlayerClient().isSignedIn())
@@ -160,6 +174,9 @@ public class ResultActivity extends BaseActivity
 
     public void unlockAchievementGPGS(String achievementId)
     {
+        if (!rankedGame)
+            return;
+
         if (agsClient != null)
         {
             if (agsClient.getPlayerClient().isSignedIn())

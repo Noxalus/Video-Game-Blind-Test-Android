@@ -4,7 +4,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    android:id="@+id/RootRelativeLayout"
+    android:id="@+id/QuizRootRelativeLayout"
     tools:context="com.noxalus.vgbt.activities.QuizActivity">
 
     <!--
@@ -123,5 +123,20 @@
         android:layout_alignBottom="@+id/scoreTitleTextView"
         android:layout_toRightOf="@+id/scoreTitleTextView"
         android:layout_toEndOf="@+id/scoreTitleTextView" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/earnedPointsTextView"
+        android:textSize="40dp"
+        android:textColor="#ff15a600"
+        android:textStyle="bold"
+        android:singleLine="true"
+        android:shadowColor="#ff00771b"
+        android:shadowDx="-4"
+        android:shadowDy="4"
+        android:shadowRadius="0.01"
+        android:visibility="invisible"
+        android:text=""/>
 
 </RelativeLayout>
