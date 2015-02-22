@@ -116,7 +116,6 @@ public class MainActivity extends BaseActivity implements GetExtractNumberAsyncR
         else
         {
             extractNumberTextView.setText(output + " extracts");
-            editor.putBoolean("newExtracts", false);
         }
 
         editor.putInt("extractNumber", output);

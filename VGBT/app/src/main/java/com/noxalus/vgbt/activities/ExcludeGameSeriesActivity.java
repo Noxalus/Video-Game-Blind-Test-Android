@@ -32,6 +32,7 @@ public class ExcludeGameSeriesActivity extends Activity implements GetGameSeries
     MyCustomAdapter dataAdapter = null;
     public GetGameSeriesAsyncResponse delegate = null;
     GameSeries gameSeries;
+    SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -40,6 +41,7 @@ public class ExcludeGameSeriesActivity extends Activity implements GetGameSeries
         setContentView(R.layout.activity_exclude_game_series);
 
         SharedPreferences settings = getSharedPreferences("VGBT", 0);
+        editor = settings.edit();
 
         boolean newExtracts = settings.getBoolean("newExtracts", true);
 
@@ -105,17 +107,20 @@ public class ExcludeGameSeriesActivity extends Activity implements GetGameSeries
     @Override
     public void processFinish(GameSeries output)
     {
+        editor.putBoolean("newExtracts", false);
+
         gameSeries = output;
 
         Config.getInstance().setGameSeries(gameSeries);
         Config.getInstance().saveGameSeries(getApplicationContext());
 
-        getExcludeGameSeries();
         displayListView();
     }
 
     private void displayListView()
     {
+        getExcludeGameSeries();
+
         // Create an ArrayAdaptar from the String Array
         dataAdapter = new MyCustomAdapter(this, R.layout.checkbox_item, gameSeries);
         ListView listView = (ListView) findViewById(R.id.gameSerieExpandableListView);

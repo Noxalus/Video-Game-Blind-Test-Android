@@ -20,9 +20,6 @@ import com.noxalus.vgbt.dialogs.GoToExcludeElementDialogFragment;
 
 public class PlayActivity extends Activity
 {
-    float x = 0;
-    float y = 0;
-
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -32,45 +29,21 @@ public class PlayActivity extends Activity
         final SharedPreferences settings = getSharedPreferences("VGBT", 0);
         final SharedPreferences.Editor editor = settings.edit();
 
-        final TextView textView = (TextView) findViewById(R.id.playInfoTextView);
-
         final Button rankedGameButton = (Button) findViewById(R.id.rankedGameButton);
-
-        rankedGameButton.setOnTouchListener(new View.OnTouchListener()
-        {
-            public boolean onTouch(View view, MotionEvent event)
-            {
-                if (event.getAction() == android.view.MotionEvent.ACTION_UP)
-                {
-                    Log.d("VGBT", "Position: " + event.getX() + ", " + event.getY());
-                    x = event.getX();
-                    y = event.getY();
-                }
-
-                return false;
-            }
-        });
-
         rankedGameButton.setOnClickListener(new View.OnClickListener()
             {
                 @Override
                 public void onClick(View v)
                 {
-                    textView.startAnimation(AnimationUtils.loadAnimation(PlayActivity.this, android.R.anim.fade_out));
-                    textView.startAnimation(AnimationUtils.loadAnimation(PlayActivity.this, android.R.anim.slide_out_right));
-                    textView.setX(x);
-                    textView.setY(y);
-                    /*
                     Integer rankedGameNumber = settings.getInt("rankedGameNumber", 0);
 
                     Intent intent = new Intent(PlayActivity.this, ModeActivity.class);
-                    intent.putExtra("ranked", true);
+                    intent.putExtra("rankedGame", true);
                     startActivity(intent);
 
                     rankedGameNumber++;
                     editor.putInt("rankedGameNumber", rankedGameNumber);
                     editor.commit();
-                    */
                 }
             }
         );

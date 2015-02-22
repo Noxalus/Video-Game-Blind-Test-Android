@@ -44,31 +44,29 @@ public class ExcludeTitlesActivity extends Activity
 
     private void getExcludeTitles()
     {
-        /*
         SharedPreferences settings = getSharedPreferences("VGBT", 0);
 
-        Set<String> excludeGamesSet = settings.getStringSet("excludeGames", null);
-        ArrayList<Integer> savedExcludeGames = new ArrayList<Integer>();
+        Set<String> excludeTitlesSet = settings.getStringSet("excludeTitles", null);
+        ArrayList<Integer> savedExcludeTitles = new ArrayList<Integer>();
 
-        if (excludeGamesSet != null) {
-            for (String excludeGame : excludeGamesSet) {
-                savedExcludeGames.add(Integer.parseInt(excludeGame));
+        if (excludeTitlesSet != null) {
+            for (String excludeGame : excludeTitlesSet) {
+                savedExcludeTitles.add(Integer.parseInt(excludeGame));
             }
         }
 
-        boolean isGameSerieExclude = isGameSerieExclude();
-        for (Game game : games)
+        boolean isTitleExclude = isTitleExclude();
+        for (Title title : titles)
         {
-            if (!isGameSerieExclude) {
-                boolean isSelected = !savedExcludeGames.contains(game.getId());
-                game.setSelected(isSelected);
+            if (!isTitleExclude) {
+                boolean isSelected = !savedExcludeTitles.contains(title.getId());
+                title.setSelected(isSelected);
             }
             else
             {
-                game.setSelected(false);
+                title.setSelected(false);
             }
         }
-        */
     }
 
     private void saveExcludeTitles()
@@ -116,6 +114,8 @@ public class ExcludeTitlesActivity extends Activity
 
     private void displayListView()
     {
+        getExcludeTitles();
+
         // Create an ArrayAdaptar from the String Array
         dataAdapter = new MyCustomAdapter(this, R.layout.checkbox_item, titles);
         ListView listView = (ListView) findViewById(R.id.titleListView);

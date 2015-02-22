@@ -96,24 +96,23 @@ public class QuizActivity extends Activity implements OnClickListener, OnComplet
             @Override
             public void onAnimationStart(Animation animation)
             {
-
             }
 
             @Override
-            public void onAnimationEnd(Animation animation) {
+            public void onAnimationEnd(Animation animation)
+            {
                 earnedPointsTextView.setVisibility(View.INVISIBLE);
             }
 
             @Override
             public void onAnimationRepeat(Animation animation)
             {
-
             }
         });
         earnedPointsAnimationSet.addAnimation(fadeOutAnimation);
 
         Animation slideOutRight = AnimationUtils.loadAnimation(QuizActivity.this, android.R.anim.slide_out_right);
-        slideOutRight.setDuration(750);
+        slideOutRight.setDuration(1500);
         earnedPointsAnimationSet.addAnimation(slideOutRight);
 
         initView();
@@ -208,6 +207,31 @@ public class QuizActivity extends Activity implements OnClickListener, OnComplet
         return excludeGames;
     }
 
+    private String getExcludeTitles()
+    {
+        SharedPreferences settings = getSharedPreferences("VGBT", 0);
+
+        Set<String> savedExcludeTitles = settings.getStringSet("excludeTitles", null);
+
+        String excludeTitles = "";
+        boolean firstElement = true;
+        if (savedExcludeTitles != null)
+        {
+            for (String excludeTitle : savedExcludeTitles)
+            {
+                if (firstElement)
+                {
+                    excludeTitles += excludeTitle;
+                    firstElement = false;
+                }
+                else
+                    excludeTitles += "," + excludeTitle;
+            }
+        }
+
+        return excludeTitles;
+    }
+
     private void getQuiz()
     {
         // AsyncTask can't be executed multiple times
@@ -215,15 +239,26 @@ public class QuizActivity extends Activity implements OnClickListener, OnComplet
         GetQuizAsyncTask getQuizAsyncTask = new GetQuizAsyncTask();
         getQuizAsyncTask.delegate = this;
 
-        String excludeGameSeries = getExcludeGameSeries();
-        if (excludeGameSeries.length() > 0)
-            excludeGameSeries = "&excludeGameSeries=" + excludeGameSeries;
+        String excludeGameSeries = "";
+        String excludeGames = "";
+        String excludeTitles = "";
 
-        String excludeGames = getExcludeGames();
-        if (excludeGames.length() > 0)
-            excludeGames = "&excludeGames=" + excludeGames;
+        if (!rankedGame)
+        {
+            excludeGameSeries = getExcludeGameSeries();
+            if (excludeGameSeries.length() > 0)
+                excludeGameSeries = "&excludeGameSeries=" + excludeGameSeries;
 
-        getQuizAsyncTask.execute(getResources().getString(R.string.api) + "?type=" + mode + excludeGameSeries + excludeGames + "&questionNumber=" + getResources().getInteger(R.integer.number_of_question_to_ask));
+            excludeGames = getExcludeGames();
+            if (excludeGames.length() > 0)
+                excludeGames = "&excludeGames=" + excludeGames;
+
+            excludeTitles = getExcludeTitles();
+            if (excludeTitles.length() > 0)
+                excludeTitles = "&excludeTitles=" + excludeTitles;
+        }
+
+        getQuizAsyncTask.execute(getResources().getString(R.string.api) + "?type=" + mode + excludeGameSeries + excludeGames + excludeTitles + "&questionNumber=" + getResources().getInteger(R.integer.number_of_question_to_ask));
     }
 
     @Override
