@@ -20,6 +20,7 @@ import com.noxalus.vgbt.R;
 import com.noxalus.vgbt.config.Config;
 import com.noxalus.vgbt.entities.Game;
 import com.noxalus.vgbt.entities.GameSerie;
+import com.noxalus.vgbt.entities.Title;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -40,6 +41,14 @@ public class ExcludeGamesActivity extends Activity
         gameSerieId = getIntent().getIntExtra("gameSerieId", 0);
 
         games = Config.getInstance().getGameSeries().getGameSerie(gameSerieId).getGames();
+
+        displayListView();
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
 
         displayListView();
     }
@@ -79,25 +88,44 @@ public class ExcludeGamesActivity extends Activity
         SharedPreferences settings = getSharedPreferences("VGBT", 0);
         SharedPreferences.Editor editor = settings.edit();
 
-        // If game serie is exclude, we delete it from the exclude game serie list
-        if (isGameSerieExclude())
-        {
-            Set<String> excludeGameSeries = settings.getStringSet("excludeGameSeries", null);
-
-            excludeGameSeries.remove(gameSerieId.toString());
-
-            editor.putStringSet("excludeGameSeries", excludeGameSeries);
-        }
-
         Set<String> excludeGames = new HashSet<String>();
+        Set<String> excludeGameSeries = settings.getStringSet("excludeGameSeries", null);
+        Set<String> excludeTitlesSet = settings.getStringSet("excludeTitles", null);
 
+        int selectedGameNumber = 0;
         for (Game game : games)
         {
             if (!game.isSelected())
+            {
                 excludeGames.add(game.getId().toString());
+
+                // For all titles of this game, we remove them from the exclude list
+                for (Title title : game.getTitles())
+                {
+                    excludeTitlesSet.remove(title.getId().toString());
+                }
+            }
+            else
+            {
+                selectedGameNumber++;
+            }
         }
 
+        // If game serie is exclude, we delete it from the exclude game serie list
+        if (selectedGameNumber > 0 && isGameSerieExclude())
+        {
+            excludeGameSeries.remove(gameSerieId.toString());
+        }
+        else if (selectedGameNumber == 0)
+        {
+            excludeGames.clear();
+            excludeGameSeries.add(gameSerieId.toString());
+        }
+
+        editor.putStringSet("excludeGameSeries", excludeGameSeries);
         editor.putStringSet("excludeGames", excludeGames);
+        editor.putStringSet("excludeTitles", excludeTitlesSet);
+
         editor.commit();
     }
 
@@ -122,6 +150,8 @@ public class ExcludeGamesActivity extends Activity
 
     private void displayListView()
     {
+        getExcludeGames();
+
         // Create an ArrayAdaptar from the String Array
         dataAdapter = new MyCustomAdapter(this, R.layout.checkbox_item, games);
         ListView listView = (ListView) findViewById(R.id.gamesListView);
@@ -136,6 +166,7 @@ public class ExcludeGamesActivity extends Activity
                 Game game = (Game) parent.getItemAtPosition(position);
 
                 Intent intent = new Intent(ExcludeGamesActivity.this, ExcludeTitlesActivity.class);
+                intent.putExtra("gameSerieId", gameSerieId);
                 intent.putExtra("gameId", game.getId());
                 startActivity(intent);
             }

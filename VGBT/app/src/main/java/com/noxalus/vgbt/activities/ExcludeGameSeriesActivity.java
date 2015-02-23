@@ -18,8 +18,10 @@ import android.widget.TextView;
 
 import com.noxalus.vgbt.R;
 import com.noxalus.vgbt.config.Config;
+import com.noxalus.vgbt.entities.Game;
 import com.noxalus.vgbt.entities.GameSerie;
 import com.noxalus.vgbt.entities.GameSeries;
+import com.noxalus.vgbt.entities.Title;
 import com.noxalus.vgbt.tasks.GetGameSeriesAsyncResponse;
 import com.noxalus.vgbt.tasks.GetGameSeriesAsyncTask;
 
@@ -55,6 +57,15 @@ public class ExcludeGameSeriesActivity extends Activity implements GetGameSeries
         }
     }
 
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+
+        if (gameSeries != null)
+            displayListView();
+    }
+
     private void getExcludeGameSeries()
     {
         SharedPreferences settings = getSharedPreferences("VGBT", 0);
@@ -83,14 +94,33 @@ public class ExcludeGameSeriesActivity extends Activity implements GetGameSeries
         SharedPreferences.Editor editor = settings.edit();
 
         Set<String> excludeGameSeries = new HashSet<String>();
+        Set<String> excludeGameSet = settings.getStringSet("excludeGames", null);
+        Set<String> excludeTitleSet = settings.getStringSet("excludeTitles", null);
 
         for (GameSerie gameSerie : gameSeries)
         {
             if (!gameSerie.isSelected())
+            {
                 excludeGameSeries.add(gameSerie.getId().toString());
+
+                // For all games of this game series, we remove them from the exclude list
+                for (Game game : gameSerie.getGames())
+                {
+                    // For all titles of this game, we remove them from the exclude list
+                    for (Title title : game.getTitles())
+                    {
+                        excludeTitleSet.remove(title.getId().toString());
+                    }
+
+                    excludeGameSet.remove(game.getId().toString());
+                }
+            }
         }
 
         editor.putStringSet("excludeGameSeries", excludeGameSeries);
+        editor.putStringSet("excludeGames", excludeGameSet);
+        editor.putStringSet("excludeTitles", excludeTitleSet);
+
         editor.commit();
     }
 

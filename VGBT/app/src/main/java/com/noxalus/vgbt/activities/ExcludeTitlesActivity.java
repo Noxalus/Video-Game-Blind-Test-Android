@@ -27,6 +27,7 @@ public class ExcludeTitlesActivity extends Activity
 {
     MyCustomAdapter dataAdapter = null;
     ArrayList<Title> titles;
+    Integer gameSerieId;
     Integer gameId;
 
     @Override
@@ -35,9 +36,18 @@ public class ExcludeTitlesActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exclude_titles);
 
+        gameSerieId = getIntent().getIntExtra("gameSerieId", 0);
         gameId = getIntent().getIntExtra("gameId", 0);
 
         titles = Config.getInstance().getTitlesFromGameId(gameId);
+
+        displayListView();
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
 
         displayListView();
     }
@@ -46,8 +56,13 @@ public class ExcludeTitlesActivity extends Activity
     {
         SharedPreferences settings = getSharedPreferences("VGBT", 0);
 
+        Set<String> excludeGameSeriesSet = settings.getStringSet("excludeGameSeries", null);
+        Set<String> excludeGamesSet = settings.getStringSet("excludeGames", null);
         Set<String> excludeTitlesSet = settings.getStringSet("excludeTitles", null);
+
         ArrayList<Integer> savedExcludeTitles = new ArrayList<Integer>();
+        boolean gameSerieIsExcluded = excludeGameSeriesSet.contains(gameSerieId.toString());
+        boolean gameIsExcluded = excludeGamesSet.contains(gameId.toString());
 
         if (excludeTitlesSet != null) {
             for (String excludeGame : excludeTitlesSet) {
@@ -55,10 +70,13 @@ public class ExcludeTitlesActivity extends Activity
             }
         }
 
+        Log.d("EXCLUDE", gameIsExcluded ? "true" : "false");
+        Log.d("EXCLUDE", excludeGamesSet.toString());
+
         boolean isTitleExclude = isTitleExclude();
         for (Title title : titles)
         {
-            if (!isTitleExclude) {
+            if (!gameSerieIsExcluded && !gameIsExcluded && !isTitleExclude) {
                 boolean isSelected = !savedExcludeTitles.contains(title.getId());
                 title.setSelected(isSelected);
             }
@@ -75,22 +93,35 @@ public class ExcludeTitlesActivity extends Activity
         SharedPreferences.Editor editor = settings.edit();
 
         Set<String> excludeTitles = new HashSet<String>();
-        int remainingTitlesNumber = 0;
+        Set<String> excludeGameSeriesSet = settings.getStringSet("excludeGameSeries", null);
+        Set<String> excludeGamesSet = settings.getStringSet("excludeGames", null);
+        boolean gameIsExcluded = excludeGamesSet.contains(gameId.toString());
+        boolean gameSerieIsExcluded = excludeGameSeriesSet.contains(gameSerieId.toString());
 
+        int selectedTitlesNumber = 0;
         for (Title title : titles)
         {
             if (!title.isSelected())
                 excludeTitles.add(title.getId().toString());
             else
-                remainingTitlesNumber++;
+                selectedTitlesNumber++;
         }
 
-        if (remainingTitlesNumber == 0)
+        if (selectedTitlesNumber == 0)
         {
-            // TODO: Exclude the game instead of all titles
+            excludeTitles.clear();
+            excludeGamesSet.add(gameId.toString());
+        }
+        else if (gameSerieIsExcluded || gameIsExcluded)
+        {
+            excludeGameSeriesSet.remove(gameSerieId.toString());
+            excludeGamesSet.remove(gameId.toString());
         }
 
+        editor.putStringSet("excludeGameSeries", excludeGameSeriesSet);
+        editor.putStringSet("excludeGames", excludeGamesSet);
         editor.putStringSet("excludeTitles", excludeTitles);
+
         editor.commit();
     }
 
