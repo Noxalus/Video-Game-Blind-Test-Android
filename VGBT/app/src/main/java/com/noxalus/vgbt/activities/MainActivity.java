@@ -84,8 +84,20 @@ public class MainActivity extends BaseActivity implements GetExtractNumberAsyncR
             @Override
             public void onClick(View v)
             {
-                Intent intent = new Intent(MainActivity.this, ExcludeGameSeriesActivity.class);
-                startActivity(intent);
+                if (isNetworkAvailable())
+                {
+                    Intent intent = new Intent(MainActivity.this, ExcludeGameSeriesActivity.class);
+                    startActivity(intent);
+                }
+                else
+                {
+                    Toast toast = Toast.makeText(getApplicationContext(), getResources().getString(R.string.not_connected), Toast.LENGTH_LONG);
+                    TextView textView = (TextView) toast.getView().findViewById(android.R.id.message);
+                    if (textView != null)
+                        textView.setGravity(Gravity.CENTER);
+
+                    toast.show();
+                }
             }
         });
     }
