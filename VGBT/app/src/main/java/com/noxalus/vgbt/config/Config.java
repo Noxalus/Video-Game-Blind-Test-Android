@@ -70,6 +70,17 @@ public class Config
         return null;
     }
 
+    public ArrayList<Game> getGamesFromGameSerieId(int gameSerieId)
+    {
+        for (GameSerie gameSerie : gameSeries)
+        {
+            if (gameSerie.getId() == gameSerieId)
+                return gameSerie.getGames();
+        }
+
+        return null;
+    }
+
     public void loadGameSeries(Context context)
     {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();

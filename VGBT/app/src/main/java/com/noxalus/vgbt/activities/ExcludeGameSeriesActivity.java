@@ -93,33 +93,45 @@ public class ExcludeGameSeriesActivity extends Activity implements GetGameSeries
         SharedPreferences settings = getSharedPreferences("VGBT", 0);
         SharedPreferences.Editor editor = settings.edit();
 
-        Set<String> excludeGameSeries = new HashSet<String>();
-        Set<String> excludeGameSet = settings.getStringSet("excludeGames", null);
-        Set<String> excludeTitleSet = settings.getStringSet("excludeTitles", null);
+        Set<String> excludeGameSeries = settings.getStringSet("excludeGameSeries", null);
+        Set<String> excludeGame = settings.getStringSet("excludeGames", null);
+        Set<String> excludeTitle = settings.getStringSet("excludeTitles", null);
+
+        if (excludeGameSeries == null)
+            excludeGameSeries = new HashSet<>();
+        if (excludeGame == null)
+            excludeGame = new HashSet<>();
+        if (excludeTitle == null)
+            excludeTitle = new HashSet<>();
 
         for (GameSerie gameSerie : gameSeries)
         {
             if (!gameSerie.isSelected())
             {
-                excludeGameSeries.add(gameSerie.getId().toString());
+                if (!excludeGameSeries.contains(gameSerie.getId().toString()))
+                    excludeGameSeries.add(gameSerie.getId().toString());
 
-                // For all games of this game series, we remove them from the exclude list
-                for (Game game : gameSerie.getGames())
-                {
-                    // For all titles of this game, we remove them from the exclude list
-                    for (Title title : game.getTitles())
-                    {
-                        excludeTitleSet.remove(title.getId().toString());
+                if (excludeGame.size() > 0) {
+                    // For all games of this game series, we remove them from the exclude list
+                    for (Game game : gameSerie.getGames()) {
+                        if (excludeTitle != null) {
+                            // For all titles of this game, we remove them from the exclude list
+                            for (Title title : game.getTitles()) {
+                                excludeTitle.remove(title.getId().toString());
+                            }
+                        }
+
+                        excludeGame.remove(game.getId().toString());
                     }
-
-                    excludeGameSet.remove(game.getId().toString());
                 }
             }
+            else
+                excludeGameSeries.remove(gameSerie.getId().toString());
         }
 
         editor.putStringSet("excludeGameSeries", excludeGameSeries);
-        editor.putStringSet("excludeGames", excludeGameSet);
-        editor.putStringSet("excludeTitles", excludeTitleSet);
+        editor.putStringSet("excludeGames", excludeGame);
+        editor.putStringSet("excludeTitles", excludeTitle);
 
         editor.commit();
     }
@@ -138,6 +150,7 @@ public class ExcludeGameSeriesActivity extends Activity implements GetGameSeries
     public void processFinish(GameSeries output)
     {
         editor.putBoolean("newExtracts", false);
+        editor.commit();
 
         gameSeries = output;
 
@@ -200,7 +213,6 @@ public class ExcludeGameSeriesActivity extends Activity implements GetGameSeries
                 convertView = vi.inflate(R.layout.checkbox_item, null);
 
                 holder = new ViewHolder();
-                holder.code = (TextView) convertView.findViewById(R.id.code);
                 holder.name = (CheckBox) convertView.findViewById(R.id.checkBox1);
                 convertView.setTag(holder);
 
@@ -223,7 +235,6 @@ public class ExcludeGameSeriesActivity extends Activity implements GetGameSeries
             }
 
             GameSerie gameSerie = gameSerieList.get(position);
-            holder.code.setText("");
             holder.name.setText(Html.fromHtml(gameSerie.getName() + " (<i>" + gameSerie.getGames().size() + "</i>)"));
             holder.name.setChecked(gameSerie.isSelected());
             holder.name.setTag(gameSerie);

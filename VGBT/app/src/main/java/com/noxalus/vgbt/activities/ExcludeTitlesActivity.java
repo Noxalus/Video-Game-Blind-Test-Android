@@ -61,17 +61,21 @@ public class ExcludeTitlesActivity extends Activity
         Set<String> excludeTitlesSet = settings.getStringSet("excludeTitles", null);
 
         ArrayList<Integer> savedExcludeTitles = new ArrayList<Integer>();
-        boolean gameSerieIsExcluded = excludeGameSeriesSet.contains(gameSerieId.toString());
-        boolean gameIsExcluded = excludeGamesSet.contains(gameId.toString());
+
+        boolean gameSerieIsExcluded = false;
+        boolean gameIsExcluded = false;
+
+        if (excludeGameSeriesSet != null)
+            gameSerieIsExcluded = excludeGameSeriesSet.contains(gameSerieId.toString());
+
+        if (excludeGamesSet != null)
+            gameIsExcluded = excludeGamesSet.contains(gameId.toString());
 
         if (excludeTitlesSet != null) {
             for (String excludeGame : excludeTitlesSet) {
                 savedExcludeTitles.add(Integer.parseInt(excludeGame));
             }
         }
-
-        Log.d("EXCLUDE", gameIsExcluded ? "true" : "false");
-        Log.d("EXCLUDE", excludeGamesSet.toString());
 
         boolean isTitleExclude = isTitleExclude();
         for (Title title : titles)
@@ -92,34 +96,91 @@ public class ExcludeTitlesActivity extends Activity
         SharedPreferences settings = getSharedPreferences("VGBT", 0);
         SharedPreferences.Editor editor = settings.edit();
 
-        Set<String> excludeTitles = new HashSet<String>();
-        Set<String> excludeGameSeriesSet = settings.getStringSet("excludeGameSeries", null);
-        Set<String> excludeGamesSet = settings.getStringSet("excludeGames", null);
-        boolean gameIsExcluded = excludeGamesSet.contains(gameId.toString());
-        boolean gameSerieIsExcluded = excludeGameSeriesSet.contains(gameSerieId.toString());
+        Set<String> excludeGameSeries = settings.getStringSet("excludeGameSeries", null);
+        Set<String> excludeGames = settings.getStringSet("excludeGames", null);
+        Set<String> excludeTitles = settings.getStringSet("excludeTitles", null);
+
+        boolean gameSerieIsExcluded = false;
+        boolean gameIsExcluded = false;
+
+        if (excludeGameSeries != null)
+            gameSerieIsExcluded = excludeGameSeries.contains(gameSerieId.toString());
+        else
+            excludeGameSeries = new HashSet<>();
+
+        if (excludeGames != null)
+            gameIsExcluded = excludeGames.contains(gameId.toString());
+        else
+            excludeGames = new HashSet<>();
+
+        if (excludeTitles == null)
+            excludeTitles = new HashSet<>();
 
         int selectedTitlesNumber = 0;
         for (Title title : titles)
         {
-            if (!title.isSelected())
-                excludeTitles.add(title.getId().toString());
-            else
+            if (!title.isSelected()) {
+                if (!excludeTitles.contains(title.getId().toString()))
+                    excludeTitles.add(title.getId().toString());
+            }
+            else {
                 selectedTitlesNumber++;
+                excludeTitles.remove(title.getId().toString());
+            }
         }
 
+        ArrayList<Game> allGamesFromGameSerie = Config.getInstance().getGamesFromGameSerieId(gameSerieId);
         if (selectedTitlesNumber == 0)
         {
-            excludeTitles.clear();
-            excludeGamesSet.add(gameId.toString());
+            // If we exclude all titles => we will exclude the game instead
+            if (!gameIsExcluded)
+                excludeGames.add(gameId.toString());
+
+            for (Title title : titles) {
+                excludeTitles.remove(title.getId().toString());
+            }
+
+            boolean allGamesAreExcluded = true;
+            for (Game game : allGamesFromGameSerie)
+            {
+                if (!excludeGames.contains(game.getId().toString()))
+                {
+                    allGamesAreExcluded = false;
+                    break;
+                }
+            }
+
+            if (allGamesAreExcluded)
+            {
+                // If all games are excluded too, we exclude the game serie instead
+                if (!gameSerieIsExcluded)
+                    excludeGameSeries.add(gameSerieId.toString());
+
+                for (Game game : allGamesFromGameSerie) {
+                    excludeGames.remove(game.getId().toString());
+                }
+            }
         }
-        else if (gameSerieIsExcluded || gameIsExcluded)
+        else if (gameSerieIsExcluded)
         {
-            excludeGameSeriesSet.remove(gameSerieId.toString());
-            excludeGamesSet.remove(gameId.toString());
+            // All games are excluded because of the game serie exclusion
+            // we need to manually add all game from excludeGames list
+            // except the one we checked
+            for (Game game : allGamesFromGameSerie)
+            {
+                if (game.getId() != gameId && !excludeGames.contains(game.getId().toString()))
+                    excludeGames.add(game.getId().toString());
+            }
+
+            excludeGameSeries.remove(gameSerieId.toString());
+        }
+        else if (gameIsExcluded)
+        {
+            excludeGames.remove(gameId.toString());
         }
 
-        editor.putStringSet("excludeGameSeries", excludeGameSeriesSet);
-        editor.putStringSet("excludeGames", excludeGamesSet);
+        editor.putStringSet("excludeGameSeries", excludeGameSeries);
+        editor.putStringSet("excludeGames", excludeGames);
         editor.putStringSet("excludeTitles", excludeTitles);
 
         editor.commit();
@@ -184,7 +245,6 @@ public class ExcludeTitlesActivity extends Activity
                 convertView = vi.inflate(R.layout.checkbox_item, null);
 
                 holder = new ViewHolder();
-                holder.code = (TextView) convertView.findViewById(R.id.code);
                 holder.name = (CheckBox) convertView.findViewById(R.id.checkBox1);
                 convertView.setTag(holder);
 
@@ -206,7 +266,6 @@ public class ExcludeTitlesActivity extends Activity
             }
 
             Title title = titleList.get(position);
-            holder.code.setText("");
             holder.name.setText(title.getName());
             holder.name.setChecked(title.isSelected());
             holder.name.setTag(title);

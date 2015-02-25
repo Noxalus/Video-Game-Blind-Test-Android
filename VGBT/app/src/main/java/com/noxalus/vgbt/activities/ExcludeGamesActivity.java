@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,7 +24,9 @@ import com.noxalus.vgbt.entities.GameSerie;
 import com.noxalus.vgbt.entities.Title;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 public class ExcludeGamesActivity extends Activity
@@ -58,7 +61,7 @@ public class ExcludeGamesActivity extends Activity
         SharedPreferences settings = getSharedPreferences("VGBT", 0);
 
         Set<String> excludeGamesSet = settings.getStringSet("excludeGames", null);
-        ArrayList<Integer> savedExcludeGames = new ArrayList<Integer>();
+        ArrayList<Integer> savedExcludeGames = new ArrayList<>();
 
         if (excludeGamesSet != null)
         {
@@ -88,21 +91,32 @@ public class ExcludeGamesActivity extends Activity
         SharedPreferences settings = getSharedPreferences("VGBT", 0);
         SharedPreferences.Editor editor = settings.edit();
 
-        Set<String> excludeGames = new HashSet<String>();
         Set<String> excludeGameSeries = settings.getStringSet("excludeGameSeries", null);
-        Set<String> excludeTitlesSet = settings.getStringSet("excludeTitles", null);
+        Set<String> excludeGames = settings.getStringSet("excludeGames", null);
+        Set<String> excludeTitles = settings.getStringSet("excludeTitles", null);
+
+        if (excludeGameSeries == null)
+            excludeGameSeries = new HashSet<>();
+
+        if (excludeGames == null)
+            excludeGames = new HashSet<>();
+
+        if (excludeTitles == null)
+            excludeTitles = new HashSet<>();
 
         int selectedGameNumber = 0;
         for (Game game : games)
         {
             if (!game.isSelected())
             {
-                excludeGames.add(game.getId().toString());
+                if (!excludeGames.contains(game.getId().toString()))
+                    excludeGames.add(game.getId().toString());
 
-                // For all titles of this game, we remove them from the exclude list
-                for (Title title : game.getTitles())
-                {
-                    excludeTitlesSet.remove(title.getId().toString());
+                if (excludeTitles.size() > 0) {
+                    // For all titles of this game, we remove them from the exclude list
+                    for (Title title : game.getTitles()) {
+                        excludeTitles.remove(title.getId().toString());
+                    }
                 }
             }
             else
@@ -118,13 +132,18 @@ public class ExcludeGamesActivity extends Activity
         }
         else if (selectedGameNumber == 0)
         {
-            excludeGames.clear();
-            excludeGameSeries.add(gameSerieId.toString());
+            if (!excludeGameSeries.contains(gameSerieId.toString()))
+                excludeGameSeries.add(gameSerieId.toString());
+
+            ArrayList<Game> allGamesFromGameSerie = Config.getInstance().getGamesFromGameSerieId(gameSerieId);
+            for (Game game : allGamesFromGameSerie) {
+                excludeGames.remove(game.getId().toString());
+            }
         }
 
         editor.putStringSet("excludeGameSeries", excludeGameSeries);
         editor.putStringSet("excludeGames", excludeGames);
-        editor.putStringSet("excludeTitles", excludeTitlesSet);
+        editor.putStringSet("excludeTitles", excludeTitles);
 
         editor.commit();
     }
@@ -134,7 +153,6 @@ public class ExcludeGamesActivity extends Activity
         SharedPreferences settings = getSharedPreferences("VGBT", 0);
 
         Set<String> excludeGameSeriesSet = settings.getStringSet("excludeGameSeries", null);
-        ArrayList<Integer> savedExcludeGameSeries = new ArrayList<Integer>();
 
         if (excludeGameSeriesSet != null)
         {
@@ -202,7 +220,6 @@ public class ExcludeGamesActivity extends Activity
                 convertView = vi.inflate(R.layout.checkbox_item, null);
 
                 holder = new ViewHolder();
-                holder.code = (TextView) convertView.findViewById(R.id.code);
                 holder.name = (CheckBox) convertView.findViewById(R.id.checkBox1);
                 convertView.setTag(holder);
 
@@ -224,7 +241,6 @@ public class ExcludeGamesActivity extends Activity
             }
 
             Game game = gameList.get(position);
-            holder.code.setText("");
             holder.name.setText(Html.fromHtml(game.getName() + " (<i>" + game.getTitles().size() + "</i>)"));
             holder.name.setChecked(game.isSelected());
             holder.name.setTag(game);
