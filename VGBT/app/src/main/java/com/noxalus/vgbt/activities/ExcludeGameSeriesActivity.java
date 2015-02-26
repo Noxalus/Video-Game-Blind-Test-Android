@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.noxalus.vgbt.R;
 import com.noxalus.vgbt.config.Config;
@@ -34,6 +36,7 @@ public class ExcludeGameSeriesActivity extends Activity implements GetGameSeries
     MyCustomAdapter dataAdapter = null;
     public GetGameSeriesAsyncResponse delegate = null;
     GameSeries gameSeries;
+    SharedPreferences settings;
     SharedPreferences.Editor editor;
 
     @Override
@@ -42,7 +45,7 @@ public class ExcludeGameSeriesActivity extends Activity implements GetGameSeries
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exclude_game_series);
 
-        SharedPreferences settings = getSharedPreferences("VGBT", 0);
+        settings = getSharedPreferences("VGBT", 0);
         editor = settings.edit();
 
         boolean newExtracts = settings.getBoolean("newExtracts", true);
@@ -68,8 +71,6 @@ public class ExcludeGameSeriesActivity extends Activity implements GetGameSeries
 
     private void getExcludeGameSeries()
     {
-        SharedPreferences settings = getSharedPreferences("VGBT", 0);
-
         Set<String> excludeGameSeriesSet = settings.getStringSet("excludeGameSeries", null);
         ArrayList<Integer> savedExcludeGameSeries = new ArrayList<Integer>();
 
@@ -90,9 +91,6 @@ public class ExcludeGameSeriesActivity extends Activity implements GetGameSeries
 
     private void saveExcludeGameSeries()
     {
-        SharedPreferences settings = getSharedPreferences("VGBT", 0);
-        SharedPreferences.Editor editor = settings.edit();
-
         Set<String> excludeGameSeries = settings.getStringSet("excludeGameSeries", null);
         Set<String> excludeGame = settings.getStringSet("excludeGames", null);
         Set<String> excludeTitle = settings.getStringSet("excludeTitles", null);
@@ -223,9 +221,22 @@ public class ExcludeGameSeriesActivity extends Activity implements GetGameSeries
                         CheckBox cb = (CheckBox) v;
                         GameSerie gameSerie = (GameSerie) cb.getTag();
 
-                        gameSerie.setSelected(cb.isChecked());
+                        if (!cb.isChecked() && !Config.getInstance().isThereEnoughSelectedTitles(settings, 4, gameSerie.getId(), Config.ExcludeType.GAME_SERIE))
+                        {
+                            cb.setChecked(true);
 
-                        ((ExcludeGameSeriesActivity) getContext()).saveExcludeGameSeries();
+                            Toast toast = Toast.makeText(getApplicationContext(), getResources().getString(R.string.not_enough_title), Toast.LENGTH_LONG);
+                            TextView textView = (TextView) toast.getView().findViewById(android.R.id.message);
+                            if (textView != null)
+                                textView.setGravity(Gravity.CENTER);
+
+                            toast.show();
+                        }
+                        else
+                        {
+                            gameSerie.setSelected(cb.isChecked());
+                            ((ExcludeGameSeriesActivity) getContext()).saveExcludeGameSeries();
+                        }
                     }
                 });
             }

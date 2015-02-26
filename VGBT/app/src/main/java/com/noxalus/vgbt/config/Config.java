@@ -1,6 +1,7 @@
 package com.noxalus.vgbt.config;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.util.Xml;
 
@@ -25,6 +26,8 @@ import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -34,6 +37,13 @@ public class Config
 {
     private final static String FILENAME = "data.xml";
     private GameSeries gameSeries;
+
+    public enum ExcludeType
+    {
+        GAME_SERIE,
+        GAME,
+        TITLE
+    };
 
     private Config()
     {
@@ -79,6 +89,42 @@ public class Config
         }
 
         return null;
+    }
+
+    public boolean isThereEnoughSelectedTitles(SharedPreferences settings, int minimumNumber, int idToExclude, ExcludeType excludeType)
+    {
+        Set<String> excludeGameSeries = settings.getStringSet("excludeGameSeries", null);
+        Set<String> excludeGames = settings.getStringSet("excludeGames", null);
+        Set<String> excludeTitles = settings.getStringSet("excludeTitles", null);
+
+        int selectedTitleCounter = 0;
+        for (GameSerie gameSerie : gameSeries)
+        {
+            if ((gameSerie.getId() != idToExclude || excludeType != ExcludeType.GAME_SERIE) &&
+                !excludeGameSeries.contains(gameSerie.getId().toString()))
+            {
+                for (Game game : gameSerie.getGames())
+                {
+                    if ((game.getId() != idToExclude || excludeType != ExcludeType.GAME) &&
+                        !excludeGames.contains(game.getId().toString()))
+                    {
+                        for (Title title : game.getTitles())
+                        {
+                            if ((title.getId() != idToExclude || excludeType != ExcludeType.TITLE) &&
+                                !excludeTitles.contains(title.getId().toString()))
+                            {
+                                selectedTitleCounter++;
+
+                                if (selectedTitleCounter >= minimumNumber)
+                                    return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 
     public void loadGameSeries(Context context)

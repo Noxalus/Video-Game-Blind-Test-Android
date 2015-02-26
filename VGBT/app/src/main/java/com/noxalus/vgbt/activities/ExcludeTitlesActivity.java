@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.noxalus.vgbt.R;
 import com.noxalus.vgbt.config.Config;
@@ -30,6 +32,9 @@ public class ExcludeTitlesActivity extends Activity
     Integer gameSerieId;
     Integer gameId;
 
+    SharedPreferences settings;
+    SharedPreferences.Editor editor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -40,6 +45,9 @@ public class ExcludeTitlesActivity extends Activity
         gameId = getIntent().getIntExtra("gameId", 0);
 
         titles = Config.getInstance().getTitlesFromGameId(gameId);
+
+        settings = getSharedPreferences("VGBT", 0);
+        editor = settings.edit();
 
         displayListView();
     }
@@ -54,8 +62,6 @@ public class ExcludeTitlesActivity extends Activity
 
     private void getExcludeTitles()
     {
-        SharedPreferences settings = getSharedPreferences("VGBT", 0);
-
         Set<String> excludeGameSeriesSet = settings.getStringSet("excludeGameSeries", null);
         Set<String> excludeGamesSet = settings.getStringSet("excludeGames", null);
         Set<String> excludeTitlesSet = settings.getStringSet("excludeTitles", null);
@@ -93,9 +99,6 @@ public class ExcludeTitlesActivity extends Activity
 
     private void saveExcludeTitles()
     {
-        SharedPreferences settings = getSharedPreferences("VGBT", 0);
-        SharedPreferences.Editor editor = settings.edit();
-
         Set<String> excludeGameSeries = settings.getStringSet("excludeGameSeries", null);
         Set<String> excludeGames = settings.getStringSet("excludeGames", null);
         Set<String> excludeTitles = settings.getStringSet("excludeTitles", null);
@@ -188,8 +191,6 @@ public class ExcludeTitlesActivity extends Activity
 
     private boolean isTitleExclude()
     {
-        SharedPreferences settings = getSharedPreferences("VGBT", 0);
-
         Set<String> excludeTitleSet = settings.getStringSet("excludeTitles", null);
 
         if (excludeTitleSet != null)
@@ -230,7 +231,6 @@ public class ExcludeTitlesActivity extends Activity
 
         private class ViewHolder
         {
-            TextView code;
             CheckBox name;
         }
 
@@ -254,9 +254,23 @@ public class ExcludeTitlesActivity extends Activity
                     {
                         CheckBox cb = (CheckBox) v;
                         Title title = (Title) cb.getTag();
-                        title.setSelected(cb.isChecked());
 
-                        ((ExcludeTitlesActivity) getContext()).saveExcludeTitles();
+                        if (!cb.isChecked() && !Config.getInstance().isThereEnoughSelectedTitles(settings, 4, title.getId(), Config.ExcludeType.TITLE))
+                        {
+                            cb.setChecked(true);
+
+                            Toast toast = Toast.makeText(getApplicationContext(), getResources().getString(R.string.not_enough_title), Toast.LENGTH_LONG);
+                            TextView textView = (TextView) toast.getView().findViewById(android.R.id.message);
+                            if (textView != null)
+                                textView.setGravity(Gravity.CENTER);
+
+                            toast.show();
+                        }
+                        else
+                        {
+                            title.setSelected(cb.isChecked());
+                            ((ExcludeTitlesActivity) getContext()).saveExcludeTitles();
+                        }
                     }
                 });
             }

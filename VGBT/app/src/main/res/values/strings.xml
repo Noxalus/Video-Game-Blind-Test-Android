@@ -8,6 +8,7 @@
     <string name="api">http://api.final-rpg.com/new/api/</string>
     <string name="title_activity_feedback">FeedbackActivity</string>
     <string name="not_connected">It seems that you are not connected to internet :\'(\n\n Sorry, but you need to be connected to play, please check your connection.</string>
+    <string name="not_enough_title">There will be not enough element to make a quiz if you uncheck this element !!</string>
     <string name="title_activity_mode">ModeActivity</string>
     <string name="title_activity_result">ResultActivity</string>
     <string name="title_activity_game_series">GameSeriesActivity</string>

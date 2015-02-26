@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.Html;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.noxalus.vgbt.R;
 import com.noxalus.vgbt.config.Config;
@@ -35,6 +37,9 @@ public class ExcludeGamesActivity extends Activity
     ArrayList<Game> games;
     Integer gameSerieId;
 
+    SharedPreferences settings;
+    SharedPreferences.Editor editor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -44,6 +49,9 @@ public class ExcludeGamesActivity extends Activity
         gameSerieId = getIntent().getIntExtra("gameSerieId", 0);
 
         games = Config.getInstance().getGameSeries().getGameSerie(gameSerieId).getGames();
+
+        settings = getSharedPreferences("VGBT", 0);
+        editor = settings.edit();
 
         displayListView();
     }
@@ -58,8 +66,6 @@ public class ExcludeGamesActivity extends Activity
 
     private void getExcludeGames()
     {
-        SharedPreferences settings = getSharedPreferences("VGBT", 0);
-
         Set<String> excludeGamesSet = settings.getStringSet("excludeGames", null);
         ArrayList<Integer> savedExcludeGames = new ArrayList<>();
 
@@ -88,9 +94,6 @@ public class ExcludeGamesActivity extends Activity
 
     private void saveExcludeGames()
     {
-        SharedPreferences settings = getSharedPreferences("VGBT", 0);
-        SharedPreferences.Editor editor = settings.edit();
-
         Set<String> excludeGameSeries = settings.getStringSet("excludeGameSeries", null);
         Set<String> excludeGames = settings.getStringSet("excludeGames", null);
         Set<String> excludeTitles = settings.getStringSet("excludeTitles", null);
@@ -205,14 +208,13 @@ public class ExcludeGamesActivity extends Activity
 
         private class ViewHolder
         {
-            TextView code;
             CheckBox name;
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent)
         {
-            ViewHolder holder = null;
+            ViewHolder holder;
 
             if (convertView == null)
             {
@@ -229,9 +231,23 @@ public class ExcludeGamesActivity extends Activity
                     {
                         CheckBox cb = (CheckBox) v;
                         Game game = (Game) cb.getTag();
-                        game.setSelected(cb.isChecked());
 
-                        ((ExcludeGamesActivity) getContext()).saveExcludeGames();
+                        if (!cb.isChecked() && !Config.getInstance().isThereEnoughSelectedTitles(settings, 4, game.getId(), Config.ExcludeType.GAME))
+                        {
+                            cb.setChecked(true);
+
+                            Toast toast = Toast.makeText(getApplicationContext(), getResources().getString(R.string.not_enough_title), Toast.LENGTH_LONG);
+                            TextView textView = (TextView) toast.getView().findViewById(android.R.id.message);
+                            if (textView != null)
+                                textView.setGravity(Gravity.CENTER);
+
+                            toast.show();
+                        }
+                        else
+                        {
+                            game.setSelected(cb.isChecked());
+                            ((ExcludeGamesActivity) getContext()).saveExcludeGames();
+                        }
                     }
                 });
             }
