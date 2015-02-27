@@ -97,6 +97,13 @@ public class Config
         Set<String> excludeGames = settings.getStringSet("excludeGames", null);
         Set<String> excludeTitles = settings.getStringSet("excludeTitles", null);
 
+        if (excludeGameSeries == null)
+            excludeGameSeries = new HashSet<>();
+        if (excludeGames == null)
+            excludeGames = new HashSet<>();
+        if (excludeTitles == null)
+            excludeTitles = new HashSet<>();
+
         int selectedTitleCounter = 0;
         for (GameSerie gameSerie : gameSeries)
         {
