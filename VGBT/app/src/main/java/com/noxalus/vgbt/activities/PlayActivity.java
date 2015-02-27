@@ -62,7 +62,10 @@ public class PlayActivity extends Activity
                       Intent optionsIntent = new Intent(PlayActivity.this, ExcludeGameSeriesActivity.class);
 
                       // Display the popup to go to exclude game serie activity
-                      GoToExcludeElementDialogFragment dialog = new GoToExcludeElementDialogFragment(getApplicationContext(), optionsIntent, modeIntent);
+                      GoToExcludeElementDialogFragment dialog = new GoToExcludeElementDialogFragment();
+                      dialog.setContext(getApplicationContext());
+                      dialog.setYesIntent(optionsIntent);
+                      dialog.setNoIntent(modeIntent);
 
                       FragmentManager fm = getFragmentManager();
                       dialog.show(fm, "GO_TO_EXCLUDE_ELEMENT");

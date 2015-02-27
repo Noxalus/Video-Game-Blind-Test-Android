@@ -20,12 +20,25 @@ public class GoToExcludeElementDialogFragment extends DialogFragment
     private Intent yesIntent;
     private Intent noIntent;
 
-    public GoToExcludeElementDialogFragment(Context context, Intent yesIntent, Intent noIntent)
+    public GoToExcludeElementDialogFragment()
+    {
+    }
+
+    public void setContext(Context context)
     {
         this.context = context;
-        this.yesIntent = yesIntent;
-        this.noIntent = noIntent;
     }
+
+    public void setYesIntent(Intent intent)
+    {
+        this.yesIntent = intent;
+    }
+
+    public void setNoIntent(Intent intent)
+    {
+        this.noIntent = intent;
+    }
+
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
